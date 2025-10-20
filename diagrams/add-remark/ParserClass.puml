@@ -2,13 +2,40 @@
 hide circle
 skinparam classAttributeIconSize 0
 
-Class "<<interface>>\nParser" as Parser
-Class RemarkCommandParser {
-  +parse(): RemarkCommand
+' ===== Interface =====
+interface Parser {
+    +parse(): Command
 }
-Class ParserException
 
-RemarkCommandParser .up.|> Parser
-Parser .right.> ParserException: throws >
-RemarkCommandParser .right.> ParserException: throws >
+' ===== Exception =====
+class ParserException
+
+' ===== Parsers =====
+class RemarkCommandParser {
+    +parse(): RemarkCommand
+}
+
+class DeletePaymentCommandParser {
+    +parse(): DeletePaymentCommand
+}
+
+class AddCommandParser {
+    +parse(): AddCommand
+}
+
+class DeleteCommandParser {
+    +parse(): DeleteCommand
+}
+
+' ===== Relationships =====
+RemarkCommandParser -|> Parser
+DeletePaymentCommandParser -|> Parser
+AddCommandParser -|> Parser
+DeleteCommandParser -|> Parser
+
+RemarkCommandParser --> ParserException : throws
+DeletePaymentCommandParser --> ParserException : throws
+AddCommandParser --> ParserException : throws
+DeleteCommandParser --> ParserException : throws
+
 @enduml
