@@ -1,0 +1,17 @@
+@@
+ @startuml
++actor User
++participant Ui
++participant Logic
++participant Model
++participant Person
++
++User -> Ui : "viewpayment 1"
++Ui -> Logic : parse("viewpayment 1")
++Logic -> Model : getFilteredPersonList()
++Model --> Logic : List<Person>
++Logic -> Person : getPayments()
++Person --> Logic : List<Payment>
++Logic -> Ui : CommandResult (summary string)
++Ui -> User : show payments
+ @enduml
