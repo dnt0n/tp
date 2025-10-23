@@ -1,0 +1,29 @@
+# Create a simplified PlantUML diagram showing only the key steps of the archive workflow.
+content = r"""
+@startuml
+title Simplified Archive Workflow ("archive 1")
+
+actor User
+participant LogicManager
+participant Parser
+participant ArchiveCommand
+participant Model
+
+User -> LogicManager : execute("archive 1")
+LogicManager -> Parser : parseCommand("archive 1")
+Parser --> LogicManager : ArchiveCommand
+
+LogicManager -> ArchiveCommand : execute(model)
+ArchiveCommand -> Model : get person at index 1
+ArchiveCommand -> Model : mark person as archived
+ArchiveCommand -> Model : updateFilteredPersonList(active only)
+ArchiveCommand --> LogicManager : CommandResult("Archived: <Name>")
+LogicManager --> User : "Archived: <Name>"
+
+@enduml
+"""
+path = "/mnt/data/archive_workflow_simple.puml"
+with open(path, "w", encoding="utf-8") as f:
+    f.write(content)
+path
+
