@@ -1,0 +1,23 @@
+@startuml
+title Simplified Add Payment Workflow ("addpayment 1,2 a/23.50 d/2025-10-09 r/CCA shirt order")
+
+actor User
+participant LogicManager
+participant Parser
+participant AddPaymentCommand
+participant Model
+
+User -> LogicManager : execute("addpayment 1,2 a/23.50 d/2025-10-09 r/CCA shirt order")
+LogicManager -> Parser : parseCommand("addpayment 1,2 a/23.50 d/2025-10-09 r/CCA shirt order")
+Parser --> LogicManager : AddPaymentCommand
+
+LogicManager -> AddPaymentCommand : execute(model)
+AddPaymentCommand -> Model : getFilteredPersonList()
+loop for each index (e.g., 1, 2)
+    AddPaymentCommand -> Model : get person at index
+    AddPaymentCommand -> Model : setPerson(target, updated with new Payment)
+end
+AddPaymentCommand --> LogicManager : CommandResult("Added payment 2025-10-09 | 23.50 | CCA shirt order to John, Aaron")
+LogicManager --> User : "Added payment 2025-10-09 | 23.50 | CCA shirt order to John, Aaron"
+
+@enduml
