@@ -1,5 +1,4 @@
-@@
- @startuml
+@startuml
 +actor User
 +participant Ui
 +participant Logic
