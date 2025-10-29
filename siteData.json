@@ -61,8 +61,9 @@
         "non-functional-requirements": "Non-Functional Requirements",
         "glossary": "Glossary",
         "appendix-instructions-for-manual-testing": "Appendix: Instructions for manual testing",
+        "appendix-planned-enhancements": "Appendix: Planned Enhancements",
         "launch-and-shutdown": "Launch and shutdown",
-        "deleting-a-person": "Deleting a person",
+        "archiving-a-person": "Archiving a person",
         "saving-data": "Saving data"
       },
       "headingKeywords": {}
@@ -110,7 +111,7 @@
         "treasura-user-guide": "Treasura User Guide",
         "quick-start": "🚀 Quick start",
         "example-commands-to-try": "💡 Example Commands to Try",
-        "typical-treasurer-workflow-using-treasura": "🪙 Typical Treasurer Workflow using Treasura",
+        "tutorial-typical-treasurer-workflow-using-treasura": "🪙 Tutorial: Typical Treasurer Workflow using Treasura",
         "a-new-semester-begins": "🎓 A New Semester Begins",
         "archiving-old-members": "📦 Archiving Old Members",
         "adding-new-members": "👥 Adding New Members",
@@ -119,6 +120,7 @@
         "finding-a-specific-payment": "🧾 Finding a Specific Payment",
         "correcting-a-payment-error": "✏️ Correcting a Payment Error",
         "fixing-a-typo-undoing-a-command": "😅 Fixing a Typo (Undoing a Command)",
+        "checking-total-collections": "📊 Checking Total Collections",
         "end-of-the-day": "✅ End of the Day",
         "full-features": "⚙️ Full Features",
         "viewing-help-help": "🆘 Viewing Help : help",
@@ -144,10 +146,8 @@
         "editing-the-data-file": "Editing the data file",
         "faq": "FAQ",
         "known-issues": "Known issues",
-        "limitations": "Limitations",
         "command-summary": "Command summary",
-        "glossary": "Glossary",
-        "appendix-planned-enhancements": "Appendix: Planned Enhancements"
+        "glossary": "Glossary"
       },
       "headingKeywords": {}
     },
