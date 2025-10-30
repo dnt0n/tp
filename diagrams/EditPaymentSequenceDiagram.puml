@@ -1,0 +1,55 @@
+@startuml
+title EditPaymentCommand Execution
+
+actor User
+participant Ui
+participant LogicManager as Logic
+participant EditPaymentCommand as EditCmd
+participant Model
+participant Person
+participant Payment
+
+User -> Ui : "editpayment 1 p/1 a/10.50"
+Ui -> Logic : parseCommand("editpayment 1 p/1 a/10.50")
+activate Logic
+
+Logic -> EditCmd : new EditPaymentCommand(personIndex, paymentIndex, descriptor)
+activate EditCmd
+EditCmd --> Logic : return command
+deactivate EditCmd
+
+Logic -> Model : getFilteredPersonList()
+activate Model
+Model --> Logic : List<Person>
+deactivate Model
+
+Logic -> Person : getPayments()  // target person
+activate Person
+Person --> Logic : List<Payment>
+deactivate Person
+
+Logic -> EditCmd : execute(model)
+activate EditCmd
+
+EditCmd -> Payment : createEditedPayment(original, descriptor)
+activate Payment
+Payment --> EditCmd : editedPayment
+deactivate Payment
+
+EditCmd -> Person : withEditedPayment(rawIndex, editedPayment)
+activate Person
+Person --> EditCmd : updatedPerson
+deactivate Person
+
+EditCmd -> Model : setPerson(target, updatedPerson)
+activate Model
+Model --> EditCmd : void
+deactivate Model
+
+EditCmd --> Logic : CommandResult (success message)
+deactivate EditCmd
+
+Logic -> Ui : showResult(CommandResult)
+Ui -> User : display success message
+
+@enduml

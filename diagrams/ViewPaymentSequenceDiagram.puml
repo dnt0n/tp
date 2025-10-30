@@ -1,16 +1,40 @@
 @startuml
-+actor User
-+participant Ui
-+participant Logic
-+participant Model
-+participant Person
-+
-+User -> Ui : "viewpayment 1"
-+Ui -> Logic : parse("viewpayment 1")
-+Logic -> Model : getFilteredPersonList()
-+Model --> Logic : List<Person>
-+Logic -> Person : getPayments()
-+Person --> Logic : List<Payment>
-+Logic -> Ui : CommandResult (summary string)
-+Ui -> User : show payments
- @enduml
+title ViewPaymentCommand Flow
+
+actor User
+participant Ui
+participant LogicManager as Logic
+participant Model
+participant Person
+
+User -> Ui : "viewpayment 1"
+activate Ui
+
+Ui -> Logic : parseCommand("viewpayment 1")
+activate Logic
+
+Logic -> ViewPaymentCommandParser : parse("1")
+activate ViewPaymentCommandParser
+
+ViewPaymentCommandParser --> Logic : ViewPaymentCommand(index=1)
+deactivate ViewPaymentCommandParser
+
+Logic -> Model : getFilteredPersonList()
+activate Model
+
+Model --> Logic : List<Person>
+deactivate Model
+
+Logic -> Person : getPayments()
+activate Person
+
+Person --> Logic : List<Payment>
+deactivate Person
+
+Logic -> Ui : CommandResult(summary string)
+deactivate Logic
+
+Ui -> User : show payments
+deactivate Ui
+
+@enduml

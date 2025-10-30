@@ -1,0 +1,49 @@
+@startuml
+title DeletePaymentCommand Execution
+
+actor User
+participant Ui
+participant LogicManager as Logic
+participant DeletePaymentCommand as DeleteCmd
+participant Model
+participant Person
+participant Payment
+
+User -> Ui : "deletepayment 2 p/1,2,3"
+Ui -> Logic : parseCommand("deletepayment 2 p/1,2,3")
+activate Logic
+
+Logic -> DeleteCmd : new DeletePaymentCommand(personIndex, paymentIndexes)
+activate DeleteCmd
+DeleteCmd --> Logic : return command
+deactivate DeleteCmd
+
+Logic -> Model : getFilteredPersonList()
+activate Model
+Model --> Logic : List<Person>
+deactivate Model
+
+Logic -> DeleteCmd : execute(model)
+activate DeleteCmd
+
+DeleteCmd -> DeleteCmd : resolveTargetPerson()
+DeleteCmd -> Person : getPayments()  // target person
+activate Person
+Person --> DeleteCmd : List<Payment>
+deactivate Person
+
+DeleteCmd -> DeleteCmd : validatePaymentIndices()
+DeleteCmd -> DeleteCmd : removePayments(target, toDelete)
+
+DeleteCmd -> Model : setPerson(target, updatedPerson)
+activate Model
+Model --> DeleteCmd : void
+deactivate Model
+
+DeleteCmd --> Logic : CommandResult (success message)
+deactivate DeleteCmd
+
+Logic -> Ui : showResult(CommandResult)
+Ui -> User : display success message
+
+@enduml

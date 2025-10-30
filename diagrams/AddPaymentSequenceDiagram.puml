@@ -13,9 +13,11 @@ Parser --> LogicManager : AddPaymentCommand
 
 LogicManager -> AddPaymentCommand : execute(model)
 AddPaymentCommand -> Model : getFilteredPersonList()
-loop for each index (e.g., 1, 2)
-    AddPaymentCommand -> Model : get person at index
-    AddPaymentCommand -> Model : setPerson(target, updated with new Payment)
+AddPaymentCommand <-- Model : displayedList
+loop for each index
+    AddPaymentCommand -> displayedList : get(index)
+    AddPaymentCommand --> AddPaymentCommand : target Person
+    AddPaymentCommand -> Model : setPerson(target, updated)
 end
 AddPaymentCommand --> LogicManager : CommandResult("Added payment 2025-10-09 | 23.50 | CCA shirt order to John, Aaron")
 LogicManager --> User : "Added payment 2025-10-09 | 23.50 | CCA shirt order to John, Aaron"
