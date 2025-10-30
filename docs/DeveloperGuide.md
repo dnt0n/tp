@@ -4,7 +4,7 @@
   pageNav: 3
 ---
 
-# AB-3 Developer Guide
+# Treasura Developer Guide
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -305,20 +305,66 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 *{More to be added}*
 
-### Use cases
+## Use cases
 
 (For all use cases below, the **System** is the `Treasura` and the **Actor** is the `user`, unless specified otherwise)
 
+
+### Member Management Use Cases
+
 ---
 
-**Use case: Archive a student**
+**Use case: Add a member**
 
 **MSS**
 
-1. User requests to list students.
-2. Treasura shows a list of students.
-3. User requests to archive a specific student.
-4. Treasura archives the student.
+1. User requests to add a member by specifying details (name, matric number, phone, email, etc.).
+2. Treasura validates all input fields.
+3. Treasura adds the member to the active list.
+4. Treasura confirms the addition with a success message.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. One or more required fields are missing or invalid (e.g., matric format incorrect, duplicate ID).  
+  Treasura shows error: *Invalid command format!
+  add: Adds a person to the address book. Parameters: n/NAME p/PHONE e/EMAIL m/MATRICULATION NUMBER [t/TAG]...
+  Example: add n/John Doe p/98765432 e/johnd@example.com m/A1234567X t/friends t/owesMoney*.  
+  Use case ends.
+
+---
+
+**Use case: Edit a member**
+
+**MSS**
+
+1. User requests to edit details of a specific member using their index.
+2. Treasura validates the input.
+3. Treasura updates the member record.
+4. Treasura displays confirmation of the update.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. Index is invalid or out of range.  
+  Treasura shows error: *The person index provided is invalid*.  
+  Use case ends.
+
+* 2b. No prefix is provided (field to edit is unspecified)
+  Treasura shows error: *At least one field to edit must be provided*.
+
+---
+
+**Use case: Archive a member**
+
+**MSS**
+
+1. User requests to list members.
+2. Treasura shows a list of members.
+3. User requests to archive a specific member.
+4. Treasura archives the member.
 
    Use case ends.
 
@@ -328,15 +374,202 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   Use case ends.
 
 * 3a. The specified index is invalid (non-integer or out of range).  
+  Treasura shows error: *The person index(es) provided is invalid*
   Use case ends.
 
-* 4a. The specified student is already archived.  
-  Treasura shows error: *Student is already archived*.  
+* 4a. The specified member is already archived.  
+  Treasura shows error: *Member is already archived*.  
   Use case ends.
 
 * 4b. Storage failure occurs.  
   Treasura shows error: *Unable to save changes*.  
   Use case ends.
+
+---
+
+**Use case: Unarchive a member**
+
+**MSS**
+
+1. User requests to list archived members.
+2. Treasura shows a list of archived members.
+3. User requests to unarchive a specific member.
+4. Treasura unarchives the member and moves them back to the active list.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. The archived list is empty.  
+  Use case ends.
+
+* 3a. The specified index is invalid (non-integer or out of range).
+  Treasura shows error: *The person index(es) provided is invalid*.
+  Use case ends.
+
+* 4a. The specified member is already active (not archived).  
+  Treasura shows error: *One or more selected persons are not archived: [NAME(S)]*.  
+  Use case ends.
+
+---
+
+**Use case: Find members**
+
+**MSS**
+
+1. User enters find command with a keyword or list of keywords.
+2. Treasura searches for members whose names or tags match the keyword(s).
+3. Treasura displays the list of matching members.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. No member matches the keyword(s).  
+  Treasura shows message: *0 persons listed!*.  
+  Use case ends.
+
+### Payment Management Use Cases
+
+---
+
+**Use case: Add a payment**
+
+**MSS**
+
+1. User requests to add a payment for one or more members.
+2. Treasura validates the indices, amount, and date.
+3. Treasura records the payment(s) under each member.
+4. Treasura displays success message and updated total.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. Any index is invalid.  
+  Treasura shows error: *The person index(es) provided is invalid*.  
+  Use case ends.
+
+* 2b. Date or amount format is invalid.  
+  Treasura shows error: *Invalid date. Please use the strict format YYYY-MM-DD (e.g., 2025-01-01) and ensure it is not in the future*.  
+  Use case ends.
+
+---
+
+**Use case: Edit a payment**
+
+**MSS**
+
+1. User requests to view payments for a member.
+2. Treasura displays the member’s payment list.
+3. User requests to edit a specific payment by index.
+4. Treasura updates the payment with new details.
+5. Treasura confirms successful update.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. Member index is invalid.  
+  Treasura shows error: *The person index(es) provided is invalid*.  
+  Use case ends.
+
+* 3a. Payment index does not exist.  
+  Treasura shows error: *Payment index is invalid for this person*.  
+  Use case ends.
+
+* 4a. New date is invalid.  
+  Treasura shows error: *Invalid date. Please use the strict format YYYY-MM-DD (e.g., 2025-01-01) and ensure it is not in the future.*.  
+  Use case ends.
+
+---
+
+**Use case: Delete a payment**
+
+**MSS**
+
+1. User requests to delete a payment using `deletepayment MEMBER_INDEX p/PAYMENT_INDEX`.
+2. Treasura validates the indices.
+3. Treasura deletes the payment record.
+4. Treasura shows confirmation message.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. Invalid member index.  
+  Treasura shows error: *Invalid index specified*.  
+  Use case ends.
+
+* 2b. Invalid payment index.  
+  Treasura shows error: *Invalid payment index #[INDEX] for person: [NAME]*.  
+  Use case ends.
+
+---
+
+**Use case: View payments for a member**
+
+**MSS**
+
+1. User requests to view payments for a specific member.
+2. Treasura retrieves all payments tied to that member.
+3. Treasura displays the list of payments.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. Invalid member index.  
+  Treasura shows error: *The person index(es) provided is invalid*.  
+  Use case ends.
+
+* 2a. Member has no payment records.  
+  Treasura shows message: *[NAME] has no payments recorded*.  
+  Use case ends.
+
+---
+
+**Use case: View all payments**
+
+**MSS**
+
+1. User requests to view all payments using `viewpayment all`.
+2. Treasura aggregates all payments across members.
+3. Treasura displays total per member and overall cumulative total.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. No payments exist.  
+  Treasura shows an empty list.  
+  Use case ends.
+
+---
+
+**Use case: Find payments**
+
+**MSS**
+
+1. User requests to find payments for a member using filters (amount/date/remark).
+2. Treasura filters the payment list based on given criteria.
+3. Treasura displays the matching payments.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. Invalid member index.  
+  Treasura shows error: *The person index(es) provided is invalid*.  
+  Use case ends.
+
+* 2a. No payments match the filters.  
+  Treasura shows message: *No payments found for Marcus Lee matching [amount | date | remark]*.  
+  Use case ends.
+
+---
+
+## ⚙️ General System Use Cases
 
 ---
 
@@ -360,44 +593,39 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   Treasura shows error: *Last action cannot be undone*.  
   Use case ends.
 
-* 2b. Storage failure occurs while reverting.  
-  Treasura shows error: *Unable to restore previous state*.  
-  Use case ends.
-
 ---
 
-**Use case: Unarchive a student**
+**Use case: Redo a previously undone action**
 
 **MSS**
 
-1. User requests to list archived students.
-2. Treasura shows a list of archived students.
-3. User requests to unarchive a specific student.
-4. Treasura unarchives the student and moves them back to the active list.
+1. User requests to redo the most recently undone command.
+2. Treasura restores the previously undone state.
+3. Treasura displays confirmation.
 
    Use case ends.
 
 **Extensions**
 
-* 2a. The archived list is empty.  
-  Use case ends.
-
-* 3a. The specified index is invalid (non-integer or out of range).  
-  Use case ends.
-
-* 4a. The specified student is already active (not archived).  
-  Treasura shows error: *Student is not archived*.  
-  Use case ends.
-
-* 4b. Unarchiving would violate a uniqueness constraint (e.g., an active student with the same `studentID` already exists).  
-  Treasura shows error: *Student with this ID already exists*.  
-  Use case ends.
-
-* 4c. Storage failure occurs.  
-  Treasura shows error: *Unable to save changes*.  
+* 1a. No command available to redo.  
+  Treasura shows error: *Nothing to redo*.  
   Use case ends.
 
 
+---
+
+**Use case: Exit the application**
+
+**MSS**
+
+1. User enters the `exit` command.
+2. Treasura saves all current data to disk.
+3. Treasura closes the application.
+
+   Use case ends.
+
+
+  
 ### Non-Functional Requirements
 
 1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.

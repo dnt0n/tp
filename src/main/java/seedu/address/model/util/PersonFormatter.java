@@ -27,7 +27,7 @@ public class PersonFormatter {
 
         sb.append("Payments: ").append(person.getPayments().size()).append(" total");
 
-        // If available, include latest payment info
+        // include latest payment info if available
         person.getLatestPayment().ifPresent(latest ->
                 sb.append(" (Latest on ").append(latest.getDate()).append(")").append("\n")
         );
