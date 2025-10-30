@@ -29,20 +29,16 @@ import seedu.address.model.person.Person;
  */
 public class UnarchiveCommand extends Command {
 
-    /** Command word used to invoke this command. */
     public static final String COMMAND_WORD = "unarchive";
 
-    /** Usage message describing the command format and examples. */
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Unarchives one or more persons identified by their indexes in the displayed person list.\n"
             + "Parameters: INDEX[,INDEX]... (each must be a positive integer)\n"
             + "Example (single): " + COMMAND_WORD + " 1\n"
             + "Example (multiple): " + COMMAND_WORD + " 1,2,5";
 
-    /** Error shown when at least one selected person is not archived. */
     public static final String MESSAGE_NOT_ARCHIVED = "One or more selected persons are not archived: %s";
 
-    /** Success message template. */
     public static final String MESSAGE_SUCCESS = "Unarchived: %s\nShowing active list.";
 
     private final List<Index> targetIndexes;

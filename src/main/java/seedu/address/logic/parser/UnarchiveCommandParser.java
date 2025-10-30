@@ -47,7 +47,6 @@ public class UnarchiveCommandParser implements Parser<UnarchiveCommand> {
         }
     }
 
-    /** Splits by comma without altering behavior. */
     private String[] splitByComma(String input) {
         return input.split(",");
     }
@@ -70,7 +69,7 @@ public class UnarchiveCommandParser implements Parser<UnarchiveCommand> {
     }
 
 
-    /** Ensures at least one valid index was provided. */
+    /** Ensures at least one valid index was provided */
     private void ensureNonEmptyIndexes(List<Index> indexes) throws ParseException {
         if (indexes.isEmpty()) {
             throw new ParseException(String.format(
@@ -78,7 +77,7 @@ public class UnarchiveCommandParser implements Parser<UnarchiveCommand> {
         }
     }
 
-    /** Standardized wrapper for usage errors that preserves the original cause. */
+    /** Wrapper method for usage errors (to incerase SLAP) */
     private ParseException usageError(ParseException cause) {
         return new ParseException(String.format(
                 MESSAGE_INVALID_COMMAND_FORMAT, UnarchiveCommand.MESSAGE_USAGE), cause);

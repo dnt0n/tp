@@ -31,20 +31,16 @@ import seedu.address.model.person.Person;
  */
 public class ArchiveCommand extends Command {
 
-    /** Command word used to invoke this command. */
     public static final String COMMAND_WORD = "archive";
 
-    /** Usage message describing the command format and examples. */
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Archives one or more persons identified by their indexes in the displayed person list.\n"
             + "Parameters: INDEX[,INDEX]... (each must be a positive integer)\n"
             + "Example (single): " + COMMAND_WORD + " 2\n"
             + "Example (multiple): " + COMMAND_WORD + " 1,3,5";
 
-    /** Error shown when at least one selected person is already archived. */
     public static final String MESSAGE_ALREADY_ARCHIVED = "One or more selected persons are already archived: %s";
 
-    /** Success message template. */
     public static final String MESSAGE_SUCCESS = "Archived: %s";
 
     private static final Logger logger = LogsCenter.getLogger(ArchiveCommand.class);
