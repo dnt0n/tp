@@ -741,6 +741,12 @@ Add a simple visual dashboard summarizing all payments (e.g., total collected, o
    When users enter unknown or misplaced prefixes (e.g., `e/fovfv`), the app currently reports unrelated errors such as “Invalid amount.” This will be updated to show clearer messages like:
    > “Unknown prefix: e/. Please check your command format.”**
 
+7. **Guarded Member Deletion (archive-first flow):**
+    Introduce an optional permanent delete pathway that operates only on archived members and requires explicit confirmation (e.g., delete 2 confirm). This clarifies the lifecycle distinction between “hide” (archive) and “purge” (delete), prevents accidental loss, and aligns expectations for users familiar with AB3-style deletion. The User Guide will document the archive-first model, the confirmation step, and the cascade effects (e.g., associated payments removed).
+
+8. **Data Portability & Safe Dataset Reset:**
+    Add export/import of full datasets as a single portable snapshot (e.g., JSON/ZIP) and a guarded reset command that wipes only the active dataset after confirmation while auto-backing up the current state. This complements Multi-CCA Support by enabling easy cross-device transfer of a CCA’s records and a clean, auditable way to start fresh for a new cohort without risky manual file operations.
+
 <!-- @@author Roshan1572 -->
 
 ### Appendix: Effort
