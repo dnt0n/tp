@@ -158,103 +158,127 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
-### \[Proposed\] Undo/redo feature
+### AddMember feature
 
-#### Proposed Implementation
+The AddMember feature allows Treasura users to add a member into the system.
 
-The proposed undo/redo mechanism is facilitated by `VersionedAddressBook`. It extends `AddressBook` with an undo/redo history, stored internally as an `addressBookStateList` and `currentStatePointer`. Additionally, it implements the following operations:
+The sequence diagram below illustrates the interactions within the `Logic` component for adding members.
 
-* `VersionedAddressBook#commit()` — Saves the current address book state in its history.
-* `VersionedAddressBook#undo()` — Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()` — Restores a previously undone address book state from its history.
-
-These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and `Model#redoAddressBook()` respectively.
-
-Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
-
-Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial address book state, and the `currentStatePointer` pointing to that single address book state.
-
-<puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
-
-Step 2. The user executes `archive 5` command to archive the 5th person in the address book. The `archive` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `archive 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
-
-<puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
-
-Step 3. The user executes `add n/David …​` to add a new person. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
-
-<puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" />
+<puml src="diagrams/AddMemberSequenceDiagram.puml" width="550" alt="Interactions Inside the Logic Component for the `add` Command" />
 
 <box type="info" seamless>
 
-**Note:** If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
+**Note:** The lifeline for `AddMemberCommandParser` should end at the destroy marker (X), but due to a limitation of PlantUML, the lifeline continues till the end of the diagram.
 
 </box>
 
-Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
+How the `add` command works:
+1. When the user enters an `add` command, `LogicManager` passes it to `AddressBookParser`.
+2. `AddressBookParser` creates an `AddMemberCommandParser` to parse the command arguments.
+3. `AddMemberCommandParser` validates and parses arguments.
+4. An `add` object is created and executed.
+5. Before execution, the current state is committed for undo/redo functionality.
+6. `add` checks if the current MATRICNUM already exists for the specified student(s).
+7. If no duplicates are found, the member is added to the system.
+8. The updated address book is saved to storage.
 
-<puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
+### Archive feature
 
+The archive feature allows Treasura users to **soft-delete (archive)** a member in the system so they no longer appear in the active list while preserving their data.
+
+The sequence diagram below illustrates the interactions within the `Logic` component for archiving members.
+
+<puml src="diagrams/ArchiveCommandSequenceDiagram.puml" width="550" alt="Interactions Inside the Logic Component for the `archive` Command" />
 
 <box type="info" seamless>
 
-**Note:** If the `currentStatePointer` is at index 0, pointing to the initial AddressBook state, then there are no previous AddressBook states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather
-than attempting to perform the undo.
+**Note:** The lifeline for `ArchiveCommandParser` should end at the destroy marker (X), but due to a limitation of PlantUML, the lifeline continues till the end of the diagram.
 
 </box>
 
-The following sequence diagram shows how an undo operation goes through the `Logic` component:
+How the `archive` command works:
+1. When the user enters an `archive` command, `LogicManager` passes the user input to `AddressBookParser`.
+2. `AddressBookParser` creates an `ArchiveCommandParser` to parse the command arguments.
+3. `ArchiveCommandParser` validates and parses arguments (e.g., the person index).
+4. An `ArchiveCommand` object is constructed and returned to `LogicManager`.
+5. Before execution, the current state of the model is **committed** to support Undo/Redo.
+6. `ArchiveCommand` retrieves the target member and checks that the member **exists** and is **not already archived**.
+7. If validation passes, the member is **marked as archived** (soft-deleted) and the filtered list is updated accordingly.
+8. The updated address book is **saved to storage**, and a success message is returned to the user.
 
-<puml src="diagrams/UndoSequenceDiagram-Logic.puml" alt="UndoSequenceDiagram-Logic" />
+### AddPayment feature
+
+The add payment feature allows Treasura users to **record a new payment** for one or more members in a single command.
+
+The sequence diagram below illustrates the interactions within the `Logic` component for adding payments.
+
+<puml src="diagrams/AddPaymentSequenceDiagram.puml" width="550" alt="Interactions Inside the Logic Component for the `archive` Command" />
 
 <box type="info" seamless>
 
-**Note:** The lifeline for `UndoCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of diagram.
+**Note:** The diagram uses a generic `Parser` participant to represent the parser layer (e.g., `AddressBookParser` delegating to `AddPaymentCommandParser`). Depending on the concrete implementation, the parser instance’s lifeline may conceptually end at a destroy marker (X), but PlantUML may render it as continuing to the end of the diagram.
 
 </box>
 
-Similarly, how an undo operation goes through the `Model` component is shown below:
+How the `addpayment` command works:
+1. The user enters an `addpayment` command. `LogicManager` forwards the raw input to the top-level `Parser`.
+2. The `Parser` identifies the command word and delegates to `AddPaymentCommandParser` (conceptually), which:
+    - Parses the **person index list** from the preamble (e.g., `1,2`),
+    - Parses and validates **amount** (`a/`), **date** (`d/`), and **remark** (`r/`),
+    - Constructs an `AddPaymentCommand` encapsulating the parsed arguments.
+3. `Parser` returns the `AddPaymentCommand` to `LogicManager`.
+4. Before mutating model state, the current model snapshot is **committed** to support **Undo/Redo**.
+5. `AddPaymentCommand#execute(model)`:
+    - Retrieves the current `displayedList` via `model.getFilteredPersonList()`.
+    - For **each specified index**:
+        - Resolves the **target person** from `displayedList`.
+        - Creates a new **Payment** object from the parsed amount/date/remark.
+        - Produces an **updated person** with the new payment appended (preserving immutability).
+        - Calls `model.setPerson(target, updated)` to persist the change.
+6. After processing all indices, the command composes a **success message** summarizing the added payment and affected members.
+7. The updated address book is **saved to storage**, and the result is returned to the user.
 
-<puml src="diagrams/UndoSequenceDiagram-Model.puml" alt="UndoSequenceDiagram-Model" />
+<box type="tip" seamless>
 
-The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
+**Validation highlights**
+- **Indices:** Must refer to persons in the current displayed list; invalid indices cause the command to fail without partial writes.
+- **Amount:** Must be a non-negative monetary value with up to two decimal places.
+- **Date:** Must follow the accepted format (e.g., `YYYY-MM-DD`) and be a valid calendar date.
+- **Remark:** Free text; excessively long remarks may be truncated or rejected depending on constraints.
+
+</box>
+
+### ViewPayment feature
+
+The view payment feature allows Treasura users to **display all payments** associated with a specific member.
+
+The sequence diagram below illustrates the interactions within the `Logic` component for viewing payments.
+
+<puml src="diagrams/ViewPaymentSequenceDiagram.puml" width="650" alt="Interactions inside the Logic component for the `viewpayment` command" />
 
 <box type="info" seamless>
 
-**Note:** If the `currentStatePointer` is at index `addressBookStateList.size() - 1`, pointing to the latest address book state, then there are no undone AddressBook states to restore. The `redo` command uses `Model#canRedoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
+**Note:** The diagram models the UI initiating parsing and rendering the results. `ViewPaymentCommand` is **non-mutating** and does not affect the Undo/Redo stack.
 
 </box>
 
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
+How the `viewpayment` command works:
+1. The user enters a `viewpayment` command in the UI (e.g., `viewpayment 1`), and the UI forwards the input to `LogicManager`.
+2. `LogicManager` delegates to `ViewPaymentCommandParser` to parse the argument (the target person index).
+3. The parser validates the index and constructs a `ViewPaymentCommand`.
+4. `ViewPaymentCommand#execute(model)` retrieves the current list of persons via `model.getFilteredPersonList()`.
+5. The target `Person` is resolved from the displayed list, and the person’s `getPayments()` is invoked to fetch their payments.
+6. A `CommandResult` containing a **summary string** (e.g., a header and/or count) is returned to the UI.
+7. The UI **renders the list of payments** for the selected member.
 
-<puml src="diagrams/UndoRedoState4.puml" alt="UndoRedoState4" />
+<box type="tip" seamless>
 
-Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern desktop applications follow.
+**Validation highlights**
+- **Index:** Must refer to a valid entry in the current displayed person list. An invalid index causes the command to fail.
+- **Non-mutating:** The command does **not** change the model (no commit, no Undo/Redo impact).
+- **Empty payments:** If the member has no payments, the UI indicates that there are **no payments to show**.
 
-<puml src="diagrams/UndoRedoState5.puml" alt="UndoRedoState5" />
-
-The following activity diagram summarizes what happens when a user executes a new command:
-
-<puml src="diagrams/CommitActivityDiagram.puml" width="250" />
-
-#### Design considerations:
-
-**Aspect: How undo & redo executes:**
-
-* **Alternative 1 (current choice):** Saves the entire address book.
-  * Pros: Easy to implement.
-  * Cons: May have performance issues in terms of memory usage.
-
-* **Alternative 2:** Individual command knows how to undo/redo by
-  itself.
-  * Pros: Will use less memory (e.g. for `archive`, just save the person being archived).
-  * Cons: We must ensure that the implementation of each individual command are correct.
-
-_{more aspects and alternatives to be added}_
-
-### \[Proposed\] Data archiving
-
-_{Explain here how the data archiving feature will be implemented}_
-
+</box>
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -805,44 +829,3 @@ By integrating **multiple data dimensions**, **state management**, and **user-fr
 
 <!-- @@author -->
 
-### Launch and shutdown
-
-1. Initial launch
-
-   1. Download the jar file and copy into an empty folder
-
-   1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
-
-1. Saving window preferences
-
-   1. Resize the window to an optimum size. Move the window to a different location. Close the window.
-
-   1. Re-launch the app by double-clicking the jar file.<br>
-       Expected: The most recent window size and location is retained.
-
-1. _{ more test cases …​ }_
-
-### Archiving a person
-
-1. Deleting a person while all persons are being shown
-
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
-
-   1. Test case: `archive 1`<br>
-      Expected: First contact is archived from the list. Details of the archived contact shown in the status message. Timestamp in the status bar is updated.
-
-   1. Test case: `archive 0`<br>
-      Expected: No person is archived. Error details shown in the status message. Status bar remains the same.
-
-   1. Other incorrect archive commands to try: `archive`, `archive x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
-
-1. _{ more test cases …​ }_
-
-### Saving data
-
-1. Dealing with missing/corrupted data files
-
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
-
-1. _{ more test cases …​ }_
