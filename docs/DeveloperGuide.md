@@ -154,6 +154,134 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 --------------------------------------------------------------------------------------------------------------------
 
+## **Implementation**
+
+This section describes some noteworthy details on how certain features are implemented.
+
+### AddMember feature
+
+The AddMember feature allows Treasura users to add a member into the system.
+
+The sequence diagram below illustrates the interactions within the `Logic` component for adding members.
+
+<puml src="diagrams/AddMemberSequenceDiagram.puml" width="550" alt="Interactions Inside the Logic Component for the `add` Command" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `AddMemberCommandParser` should end at the destroy marker (X), but due to a limitation of PlantUML, the lifeline continues till the end of the diagram.
+
+</box>
+
+How the `add` command works:
+1. When the user enters an `add` command, `LogicManager` passes it to `AddressBookParser`.
+2. `AddressBookParser` creates an `AddMemberCommandParser` to parse the command arguments.
+3. `AddMemberCommandParser` validates and parses arguments.
+4. An `add` object is created and executed.
+5. Before execution, the current state is committed for undo/redo functionality.
+6. `add` checks if the current MATRICNUM already exists for the specified student(s).
+7. If no duplicates are found, the member is added to the system.
+8. The updated address book is saved to storage.
+
+### Archive feature
+
+The archive feature allows Treasura users to **soft-delete (archive)** a member in the system so they no longer appear in the active list while preserving their data.
+
+The sequence diagram below illustrates the interactions within the `Logic` component for archiving members.
+
+<puml src="diagrams/ArchiveCommandSequenceDiagram.puml" width="550" alt="Interactions Inside the Logic Component for the `archive` Command" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `ArchiveCommandParser` should end at the destroy marker (X), but due to a limitation of PlantUML, the lifeline continues till the end of the diagram.
+
+</box>
+
+How the `archive` command works:
+1. When the user enters an `archive` command, `LogicManager` passes the user input to `AddressBookParser`.
+2. `AddressBookParser` creates an `ArchiveCommandParser` to parse the command arguments.
+3. `ArchiveCommandParser` validates and parses arguments (e.g., the person index).
+4. An `ArchiveCommand` object is constructed and returned to `LogicManager`.
+5. Before execution, the current state of the model is **committed** to support Undo/Redo.
+6. `ArchiveCommand` retrieves the target member and checks that the member **exists** and is **not already archived**.
+7. If validation passes, the member is **marked as archived** (soft-deleted) and the filtered list is updated accordingly.
+8. The updated address book is **saved to storage**, and a success message is returned to the user.
+
+### AddPayment feature
+
+The add payment feature allows Treasura users to **record a new payment** for one or more members in a single command.
+
+The sequence diagram below illustrates the interactions within the `Logic` component for adding payments.
+
+<puml src="diagrams/AddPaymentSequenceDiagram.puml" width="550" alt="Interactions Inside the Logic Component for the `archive` Command" />
+
+<box type="info" seamless>
+
+**Note:** The diagram uses a generic `Parser` participant to represent the parser layer (e.g., `AddressBookParser` delegating to `AddPaymentCommandParser`). Depending on the concrete implementation, the parser instance’s lifeline may conceptually end at a destroy marker (X), but PlantUML may render it as continuing to the end of the diagram.
+
+</box>
+
+How the `addpayment` command works:
+1. The user enters an `addpayment` command. `LogicManager` forwards the raw input to the top-level `Parser`.
+2. The `Parser` identifies the command word and delegates to `AddPaymentCommandParser` (conceptually), which:
+    - Parses the **person index list** from the preamble (e.g., `1,2`),
+    - Parses and validates **amount** (`a/`), **date** (`d/`), and **remark** (`r/`),
+    - Constructs an `AddPaymentCommand` encapsulating the parsed arguments.
+3. `Parser` returns the `AddPaymentCommand` to `LogicManager`.
+4. Before mutating model state, the current model snapshot is **committed** to support **Undo/Redo**.
+5. `AddPaymentCommand#execute(model)`:
+    - Retrieves the current `displayedList` via `model.getFilteredPersonList()`.
+    - For **each specified index**:
+        - Resolves the **target person** from `displayedList`.
+        - Creates a new **Payment** object from the parsed amount/date/remark.
+        - Produces an **updated person** with the new payment appended (preserving immutability).
+        - Calls `model.setPerson(target, updated)` to persist the change.
+6. After processing all indices, the command composes a **success message** summarizing the added payment and affected members.
+7. The updated address book is **saved to storage**, and the result is returned to the user.
+
+<box type="tip" seamless>
+
+**Validation highlights**
+- **Indices:** Must refer to persons in the current displayed list; invalid indices cause the command to fail without partial writes.
+- **Amount:** Must be a non-negative monetary value with up to two decimal places.
+- **Date:** Must follow the accepted format (e.g., `YYYY-MM-DD`) and be a valid calendar date.
+- **Remark:** Free text; excessively long remarks may be truncated or rejected depending on constraints.
+
+</box>
+
+### ViewPayment feature
+
+The view payment feature allows Treasura users to **display all payments** associated with a specific member.
+
+The sequence diagram below illustrates the interactions within the `Logic` component for viewing payments.
+
+<puml src="diagrams/ViewPaymentSequenceDiagram.puml" width="650" alt="Interactions inside the Logic component for the `viewpayment` command" />
+
+<box type="info" seamless>
+
+**Note:** The diagram models the UI initiating parsing and rendering the results. `ViewPaymentCommand` is **non-mutating** and does not affect the Undo/Redo stack.
+
+</box>
+
+How the `viewpayment` command works:
+1. The user enters a `viewpayment` command in the UI (e.g., `viewpayment 1`), and the UI forwards the input to `LogicManager`.
+2. `LogicManager` delegates to `ViewPaymentCommandParser` to parse the argument (the target person index).
+3. The parser validates the index and constructs a `ViewPaymentCommand`.
+4. `ViewPaymentCommand#execute(model)` retrieves the current list of persons via `model.getFilteredPersonList()`.
+5. The target `Person` is resolved from the displayed list, and the person’s `getPayments()` is invoked to fetch their payments.
+6. A `CommandResult` containing a **summary string** (e.g., a header and/or count) is returned to the UI.
+7. The UI **renders the list of payments** for the selected member.
+
+<box type="tip" seamless>
+
+**Validation highlights**
+- **Index:** Must refer to a valid entry in the current displayed person list. An invalid index causes the command to fail.
+- **Non-mutating:** The command does **not** change the model (no commit, no Undo/Redo impact).
+- **Empty payments:** If the member has no payments, the UI indicates that there are **no payments to show**.
+
+</box>
+
+--------------------------------------------------------------------------------------------------------------------
+
 ## **Documentation, logging, testing, configuration, dev-ops**
 
 * [Documentation guide](Documentation.md)
@@ -707,44 +835,3 @@ By integrating **multiple data dimensions**, **state management**, and **user-fr
 
 <!-- @@author -->
 
-### Launch and shutdown
-
-1. Initial launch
-
-   1. Download the jar file and copy into an empty folder
-
-   1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
-
-1. Saving window preferences
-
-   1. Resize the window to an optimum size. Move the window to a different location. Close the window.
-
-   1. Re-launch the app by double-clicking the jar file.<br>
-       Expected: The most recent window size and location is retained.
-
-1. _{ more test cases …​ }_
-
-### Archiving a person
-
-1. Deleting a person while all persons are being shown
-
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
-
-   1. Test case: `archive 1`<br>
-      Expected: First contact is archived from the list. Details of the archived contact shown in the status message. Timestamp in the status bar is updated.
-
-   1. Test case: `archive 0`<br>
-      Expected: No person is archived. Error details shown in the status message. Status bar remains the same.
-
-   1. Other incorrect archive commands to try: `archive`, `archive x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
-
-1. _{ more test cases …​ }_
-
-### Saving data
-
-1. Dealing with missing/corrupted data files
-
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
-
-1. _{ more test cases …​ }_
