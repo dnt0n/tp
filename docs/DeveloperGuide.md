@@ -720,10 +720,26 @@ testers are expected to do more *exploratory* testing.
 
 ### **Appendix: Planned Enhancements**
 Our team size is 5.
-* Payment dashboard (A quick visualisation of all payments)
-* Store and access member and payment data from multiple CCAs (Separate storage)
-* Some of our error messages may not identify the exact cause of error, and may return a general error message which provides the correct command format to use. We will be refining these error messages to target their specific cause in the future versions.
-* Our `editpayment` and `archivepayment` features may function without using viewpayment to view the payment indices. This will be fixed in a future version.
+**1. **Payment Dashboard:**  
+Add a simple visual dashboard summarizing all payments (e.g., total collected, outstanding, and by category) for better financial overview.
+
+2. **Multi-CCA Support:**  
+   Allow users to store and switch between different CCAs’ member and payment data using separate storage files.
+
+3. **Refine Error Messages:**  
+   Some error messages are overly generic, returning only the correct command format. Future updates will provide more specific feedback that identifies the exact cause of the error.
+
+4. **Enforce `viewpayment` Precondition:**  
+   Currently, `editpayment` and `archivepayment` can be used without viewing a person’s payment list first. This will be fixed by requiring `viewpayment` before editing or deleting payments, ensuring users act within the correct context.
+
+5. **Improve Date Validation Feedback:**  
+   The same error message is shown for both invalid date formats and future dates. Future versions will distinguish between the two:
+    - *Invalid format:* “Please use YYYY-MM-DD (e.g., 2025-01-01).”
+    - *Future date:* “Payment date cannot be in the future.”
+
+6. **Enhance Command Error Handling:**  
+   When users enter unknown or misplaced prefixes (e.g., `e/fovfv`), the app currently reports unrelated errors such as “Invalid amount.” This will be updated to show clearer messages like:
+   > “Unknown prefix: e/. Please check your command format.”**
 
 <!-- @@author Roshan1572 -->
 
