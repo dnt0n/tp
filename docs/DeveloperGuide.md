@@ -567,9 +567,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   Treasura shows message: *No payments found for Marcus Lee matching [amount | date | remark]*.  
   Use case ends.
 
----
 
-## ⚙️ General System Use Cases
+
+## General System Use Cases
 
 ---
 
@@ -615,7 +615,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 <!-- @@author Roshan1572 -->
 
----
 
 **Use case: Exit the application**
 
