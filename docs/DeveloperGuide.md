@@ -735,6 +735,14 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 Given below are instructions to test the app manually.
 
+#### Launching the application
+1. Ensure that you have Java 17 or above installed.
+2. Download the latest `.jar` file from the **Releases** page (e.g., `Treasura.jar`).
+3. Open a terminal in the directory containing the JAR file.
+4. Run a few basic commands such as add, addpayment, archive, and unarchive
+5. Details for a quick and easy starting workflow catered to manual testing can be found in our User Guide.
+
+
 <box type="info" seamless>
 
 **Note:** These instructions only provide a starting point for testers to work on;
@@ -744,7 +752,8 @@ testers are expected to do more *exploratory* testing.
 
 ### **Appendix: Planned Enhancements**
 Our team size is 5.
-**1. **Payment Dashboard:**  
+
+1. **Payment Dashboard:**  
 Add a simple visual dashboard summarizing all payments (e.g., total collected, outstanding, and by category) for better financial overview.
 
 2. **Multi-CCA Support:**  
