@@ -137,7 +137,7 @@ public class FindPaymentCommand extends Command {
         if (date != null) {
             return filterByDate(payments);
         }
-        // this should never happen as parser enforces exactly one filter.
+        // this should never happen as parser enforces exactly one filter
         assert false : "Parser should ensure exactly one non-null filter.";
         return List.of();
     }
@@ -151,7 +151,7 @@ public class FindPaymentCommand extends Command {
     private List<Payment> filterByAmount(List<Payment> payments) {
         return payments.stream()
                 .filter(p -> p.getAmount().equals(amount))
-                .sorted(paymentComparator())
+                .sorted(getPaymentComparator())
                 .collect(Collectors.toList());
     }
 
@@ -165,7 +165,7 @@ public class FindPaymentCommand extends Command {
         String keyword = remark.toLowerCase();
         return payments.stream()
                 .filter(p -> p.getRemarks() != null && p.getRemarks().toLowerCase().contains(keyword))
-                .sorted(paymentComparator())
+                .sorted(getPaymentComparator())
                 .collect(Collectors.toList());
     }
 
@@ -178,7 +178,7 @@ public class FindPaymentCommand extends Command {
     private List<Payment> filterByDate(List<Payment> payments) {
         return payments.stream()
                 .filter(p -> p.getDate().equals(date))
-                .sorted(paymentComparator())
+                .sorted(getPaymentComparator())
                 .collect(Collectors.toList());
     }
 
@@ -192,7 +192,7 @@ public class FindPaymentCommand extends Command {
      *
      * @return comparator used for consistent ordering of payment results.
      */
-    private Comparator<Payment> paymentComparator() {
+    private Comparator<Payment> getPaymentComparator() {
         return Comparator
                 .comparing(Payment::getDate, Comparator.reverseOrder())
                 .thenComparing(Payment::getAmount, Comparator.reverseOrder())

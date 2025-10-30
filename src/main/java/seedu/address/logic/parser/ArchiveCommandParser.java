@@ -40,7 +40,7 @@ public class ArchiveCommandParser implements Parser<ArchiveCommand> {
     }
 
     // ---------------------------------------------------------------------
-    // Helpers
+    // Helper methods
     // ---------------------------------------------------------------------
 
     /** Ensures the raw argument string is not empty. */
@@ -51,7 +51,6 @@ public class ArchiveCommandParser implements Parser<ArchiveCommand> {
         }
     }
 
-    /** Splits by comma without altering behavior. */
     private String[] splitByComma(String input) {
         return input.split(",");
     }
@@ -81,7 +80,7 @@ public class ArchiveCommandParser implements Parser<ArchiveCommand> {
         }
     }
 
-    /** Standardized wrapper for usage errors that preserves the original cause. */
+    /** wrapper method for usage error */
     private ParseException usageError(ParseException cause) {
         return new ParseException(String.format(
                 MESSAGE_INVALID_COMMAND_FORMAT, ArchiveCommand.MESSAGE_USAGE), cause);
