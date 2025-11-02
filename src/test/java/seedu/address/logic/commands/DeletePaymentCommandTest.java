@@ -183,6 +183,11 @@ public class DeletePaymentCommandTest {
             throw new AssertionError();
         }
 
+        @Override
+        public void pushUndoSnapshot(ReadOnlyAddressBook snapshot) {
+            throw new AssertionError();
+        }
+
     }
 
     private static class ModelStubWithPerson extends ModelStub {

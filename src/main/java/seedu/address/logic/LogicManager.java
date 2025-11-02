@@ -13,6 +13,7 @@ import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Person;
@@ -49,14 +50,19 @@ public class LogicManager implements Logic {
         CommandResult commandResult;
         Command command = addressBookParser.parseCommand(commandText);
 
-        if (command.isMutating()) {
-            model.saveSnapshot();
-            model.clearRedo(); // for a later redo if needed
+        ReadOnlyAddressBook preState = null;
+        boolean mutating = command.isMutating();
+        if (mutating) {
+            preState = new AddressBook(model.getAddressBook()); // deep copy
         }
 
-        commandResult = command.execute(model);
-
         try {
+            commandResult = command.execute(model);
+
+            if (mutating) {
+                model.pushUndoSnapshot(preState);
+                model.clearRedo(); // a successful new mutation invalidates redo history
+            }
             storage.saveAddressBook(model.getAddressBook());
         } catch (AccessDeniedException e) {
             throw new CommandException(String.format(FILE_OPS_PERMISSION_ERROR_FORMAT, e.getMessage()), e);

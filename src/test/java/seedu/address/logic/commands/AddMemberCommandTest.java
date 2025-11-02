@@ -184,6 +184,11 @@ public class AddMemberCommandTest {
         public void redo() {
             throw new AssertionError("This method should not be called.");
         }
+
+        @Override
+        public void pushUndoSnapshot(ReadOnlyAddressBook snapshot) {
+            throw new AssertionError();
+        }
     }
 
     /**
