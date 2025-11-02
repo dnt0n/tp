@@ -633,7 +633,7 @@ Extensions:
   Use case ends.
 
 * 2a. The last command is not undoable (e.g., non-state-changing action).  
-  Treasura will undo the last mutating action (e.g., the user performs "addpayment" -> "list". "addpayment" will be undone). 
+  Treasura will undo the last mutating action (e.g., the user performs "addpayment" -> "list". "addpayment" will be undone).
   Use case ends.
 
 ---
