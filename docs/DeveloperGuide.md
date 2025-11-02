@@ -390,7 +390,7 @@ High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have
   Use case ends.
 
 * 3a. The specified index is invalid (non-integer or out of range).  
-  Treasura shows error: *The member index(es) provided is invalid*
+  Treasura shows error: *The member index(es) provided is invalid*.
   Use case ends.
 
 * 4a. The specified member is already archived.  
