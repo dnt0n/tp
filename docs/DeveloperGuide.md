@@ -238,7 +238,7 @@ How the `addpayment` command works:
 **Validation highlights**
 - **Indices:** Must refer to members in the current displayed list; invalid indices cause the command to fail without partial writes.
 - **Amount:** Must be a non-negative monetary value with up to two decimal places.
-- **Date:** Must follow the accepted format (e.g., `YYYY-MM-DD`) and be a valid calendar date.
+- **Date:** Must follow the accepted format (e.g., `YYYY-MM-DD`) and be a valid calendar date that is not in the future.
 - **Remark:** Free text; excessively long remarks may be truncated or rejected depending on constraints.
 
 </box>
