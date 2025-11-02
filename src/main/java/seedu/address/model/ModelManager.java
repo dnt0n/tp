@@ -155,6 +155,11 @@ public class ModelManager implements Model {
     public void clearRedo() {
         redoStack.clear();
     }
+    @Override
+    public void pushUndoSnapshot(ReadOnlyAddressBook snapshot) {
+        requireNonNull(snapshot);
+        undoStack.push(new AddressBook(snapshot)); // deep copy
+    }
 
     @Override
     public boolean canRedo() {

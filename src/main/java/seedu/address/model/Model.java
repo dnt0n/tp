@@ -106,6 +106,12 @@ public interface Model {
     void saveSnapshot();
 
     /**
+     * Stores the given address book state in the undo history.
+     * Called before a mutating command is executed, so that the user can undo it later.
+     */
+    void pushUndoSnapshot(ReadOnlyAddressBook snapshot);
+
+    /**
      * Restores the AddressBook to its previous state.
      *
      * @throws IllegalStateException if there are no states available to undo.
