@@ -316,11 +316,10 @@ High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have
 | `* * *`  | CCA Treasurer | search for members by name or tag        | find records quickly                             |
 | `* * *`  | CCA Treasurer | archive inactive members                 | keep my records clean and uncluttered            |
 | `* * *`  | CCA Treasurer | record payments from members             | know who has paid fees                           |
+| `* * *`  | CCA Treasurer | delete payment from a member             | delete unintended payment                        |
 | `* * *`  | CCA Treasurer | see the time and date of payments        | track payments chronologically                   |
-| `* * *`  | CCA Treasurer | add expenses for CCA purchases           | streamline bookkeeping and avoid manual tracking |
-| `* * *`  | CCA Treasurer | archive expenses for CCA purchases       | archive unwanted data                            |
+| `* * *`  | CCA Treasurer | search for payments                      | find payment records                             |
 | `* * *`  | CCA Treasurer | sync data automatically when back online | avoid manual backups                             |
-| `* * *`  | CCA Treasurer | archive payment from a member            | archive unintended payment                       |
 
 
 ## Use cases
