@@ -339,7 +339,6 @@ High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have
 1. User requests to add a member by specifying details (name, matric number, phone, email, etc.).
 2. Treasura validates all input fields.
 3. Treasura adds the member to the active list.
-4. Treasura confirms the addition with a success message.
 
    Use case ends.
 
@@ -629,7 +628,8 @@ Extensions:
 **Extensions**
 
 * 1a. There is no action to undo.  
-  Treasura shows error: *Nothing to undo*.  
+  Treasura shows error: *Nothing to undo*.
+  
   Use case ends.
 
 * 2a. The last command is not undoable (e.g., non-state-changing action).  
