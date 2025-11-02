@@ -80,7 +80,7 @@ The `UI` component,
 * executes user commands using the `Logic` component.
 * listens for changes to `Model` data so that the UI can be updated with the modified data.
 * keeps a reference to the `Logic` component, because the `UI` relies on the `Logic` to execute commands.
-* depends on some classes in the `Model` component, as it displays `Person` object residing in the `Model`.
+* depends on some classes in the `Model` component, as it displays `Member` object residing in the `Model`.
 
 ### Logic component
 
@@ -103,7 +103,7 @@ How the `Logic` component works:
 
 1. When `Logic` is called upon to execute a command, it is passed to an `AddressBookParser` object which in turn creates a parser that matches the command (e.g., `archiveCommandParser`) and uses it to parse the command.
 1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `archiveCommand`) which is executed by the `LogicManager`.
-1. The command can communicate with the `Model` when it is executed (e.g. to archive a person).<br>
+1. The command can communicate with the `Model` when it is executed (e.g. to archive a member).<br>
    Note that although this is shown as a single step in the diagram above (for simplicity), in the code it can take several interactions (between the command object and the `Model`) to achieve.
 1. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
 
@@ -123,18 +123,13 @@ How the parsing works:
 
 The `Model` component,
 
-* stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
-* stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
+* stores the address boo![img.png](img.png)k data i.e., all `Member` objects (which are contained in a `UniquePersonList` object).
+* stores the currently 'selected' `Member` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Member>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
-<box type="info" seamless>
-
-**Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
-
 <puml src="diagrams/BetterModelClassDiagram.puml" width="450" />
 
-</box>
 
 
 ### Storage component
@@ -144,7 +139,7 @@ The `Model` component,
 <puml src="diagrams/StorageClassDiagram.puml" width="550" />
 
 The `Storage` component,
-* can save both address book data and user preference data in JSON format, and read them back into corresponding objects.
+* can save both Treasura data and user preference data in JSON format, and read them back into corresponding objects.
 * inherits from both `AddressBookStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
 
@@ -180,7 +175,7 @@ How the `add` command works:
 5. Before execution, the current state is committed for undo/redo functionality.
 6. `add` checks if the current MATRICNUM already exists for the specified student(s).
 7. If no duplicates are found, the member is added to the system.
-8. The updated address book is saved to storage.
+8. The updated Treasura is saved to storage.
 
 ### Archive feature
 
@@ -199,12 +194,12 @@ The sequence diagram below illustrates the interactions within the `Logic` compo
 How the `archive` command works:
 1. When the user enters an `archive` command, `LogicManager` passes the user input to `AddressBookParser`.
 2. `AddressBookParser` creates an `ArchiveCommandParser` to parse the command arguments.
-3. `ArchiveCommandParser` validates and parses arguments (e.g., the person index).
+3. `ArchiveCommandParser` validates and parses arguments (e.g., the member index).
 4. An `ArchiveCommand` object is constructed and returned to `LogicManager`.
 5. Before execution, the current state of the model is **committed** to support Undo/Redo.
 6. `ArchiveCommand` retrieves the target member and checks that the member **exists** and is **not already archived**.
 7. If validation passes, the member is **marked as archived** (soft-deleted) and the filtered list is updated accordingly.
-8. The updated address book is **saved to storage**, and a success message is returned to the user.
+8. The updated Treasura is **saved to storage**, and a success message is returned to the user.
 
 ### AddPayment feature
 
@@ -223,7 +218,7 @@ The sequence diagram below illustrates the interactions within the `Logic` compo
 How the `addpayment` command works:
 1. The user enters an `addpayment` command. `LogicManager` forwards the raw input to the top-level `Parser`.
 2. The `Parser` identifies the command word and delegates to `AddPaymentCommandParser` (conceptually), which:
-    - Parses the **person index list** from the preamble (e.g., `1,2`),
+    - Parses the **member index list** from the preamble (e.g., `1,2`),
     - Parses and validates **amount** (`a/`), **date** (`d/`), and **remark** (`r/`),
     - Constructs an `AddPaymentCommand` encapsulating the parsed arguments.
 3. `Parser` returns the `AddPaymentCommand` to `LogicManager`.
@@ -231,17 +226,17 @@ How the `addpayment` command works:
 5. `AddPaymentCommand#execute(model)`:
     - Retrieves the current `displayedList` via `model.getFilteredPersonList()`.
     - For **each specified index**:
-        - Resolves the **target person** from `displayedList`.
+        - Resolves the **target member** from `displayedList`.
         - Creates a new **Payment** object from the parsed amount/date/remark.
-        - Produces an **updated person** with the new payment appended (preserving immutability).
+        - Produces an **updated member** with the new payment appended (preserving immutability).
         - Calls `model.setPerson(target, updated)` to persist the change.
 6. After processing all indices, the command composes a **success message** summarizing the added payment and affected members.
-7. The updated address book is **saved to storage**, and the result is returned to the user.
+7. The updated Treasura is **saved to storage**, and the result is returned to the user.
 
 <box type="tip" seamless>
 
 **Validation highlights**
-- **Indices:** Must refer to persons in the current displayed list; invalid indices cause the command to fail without partial writes.
+- **Indices:** Must refer to members in the current displayed list; invalid indices cause the command to fail without partial writes.
 - **Amount:** Must be a non-negative monetary value with up to two decimal places.
 - **Date:** Must follow the accepted format (e.g., `YYYY-MM-DD`) and be a valid calendar date.
 - **Remark:** Free text; excessively long remarks may be truncated or rejected depending on constraints.
@@ -264,17 +259,17 @@ The sequence diagram below illustrates the interactions within the `Logic` compo
 
 How the `viewpayment` command works:
 1. The user enters a `viewpayment` command in the UI (e.g., `viewpayment 1`), and the UI forwards the input to `LogicManager`.
-2. `LogicManager` delegates to `ViewPaymentCommandParser` to parse the argument (the target person index).
+2. `LogicManager` delegates to `ViewPaymentCommandParser` to parse the argument (the target member index).
 3. The parser validates the index and constructs a `ViewPaymentCommand`.
-4. `ViewPaymentCommand#execute(model)` retrieves the current list of persons via `model.getFilteredPersonList()`.
-5. The target `Person` is resolved from the displayed list, and the person’s `getPayments()` is invoked to fetch their payments.
+4. `ViewPaymentCommand#execute(model)` retrieves the current list of members via `model.getFilteredPersonList()`.
+5. The target `Member` is resolved from the displayed list, and the member’s `getPayments()` is invoked to fetch their payments.
 6. A `CommandResult` containing a **summary string** (e.g., a header and/or count) is returned to the UI.
 7. The UI **renders the list of payments** for the selected member.
 
 <box type="tip" seamless>
 
 **Validation highlights**
-- **Index:** Must refer to a valid entry in the current displayed person list. An invalid index causes the command to fail.
+- **Index:** Must refer to a valid entry in the current displayed member list. An invalid index causes the command to fail.
 - **Non-mutating:** The command does **not** change the model (no commit, no Undo/Redo impact).
 - **Empty payments:** If the member has no payments, the UI indicates that there are **no payments to show**.
 
@@ -290,7 +285,7 @@ How the `viewpayment` command works:
 * [Configuration guide](Configuration.md)
 * [DevOps guide](DevOps.md)
 
---------------------------------------------------------------------------------------------------------------------
+---
 
 ## **Appendix: Requirements**
 
@@ -311,7 +306,8 @@ How the `viewpayment` command works:
 
 ### User stories
 
-Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
+**Priorities:**  
+High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
 | Priority | As a …        | I want to …                              | So that I can…                                   |
 |----------|---------------|------------------------------------------|--------------------------------------------------|
@@ -326,8 +322,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *`  | CCA Treasurer | sync data automatically when back online | avoid manual backups                             |
 | `* * *`  | CCA Treasurer | archive payment from a member            | archive unintended payment                       |
 
-
-*{More to be added}*
 
 ## Use cases
 
@@ -353,7 +347,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * 2a. One or more required fields are missing or invalid (e.g., matric format incorrect, duplicate ID).  
   Treasura shows error: *Invalid command format!
-  add: Adds a person to the address book. Parameters: n/NAME p/PHONE e/EMAIL m/MATRICULATION NUMBER [t/TAG]...
+  add: Adds a member to the Treasura. Parameters: n/NAME p/PHONE e/EMAIL m/MATRICULATION NUMBER [t/TAG]...
   Example: add n/John Doe p/98765432 e/johnd@example.com m/A1234567X t/friends t/owesMoney*.  
   Use case ends.
 
@@ -373,7 +367,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 2a. Index is invalid or out of range.  
-  Treasura shows error: *The person index provided is invalid*.  
+  Treasura shows error: *The member index provided is invalid*.  
   Use case ends.
 
 * 2b. No prefix is provided (field to edit is unspecified)
@@ -398,7 +392,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   Use case ends.
 
 * 3a. The specified index is invalid (non-integer or out of range).  
-  Treasura shows error: *The person index(es) provided is invalid*
+  Treasura shows error: *The member index(es) provided is invalid*
   Use case ends.
 
 * 4a. The specified member is already archived.  
@@ -428,11 +422,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   Use case ends.
 
 * 3a. The specified index is invalid (non-integer or out of range).
-  Treasura shows error: *The person index(es) provided is invalid*.
+  Treasura shows error: *The member index(es) provided is invalid*.
   Use case ends.
 
 * 4a. The specified member is already active (not archived).  
-  Treasura shows error: *One or more selected persons are not archived: [NAME(S)]*.  
+  Treasura shows error: *One or more selected members are not archived: [NAME(S)]*.  
   Use case ends.
 
 ---
@@ -450,8 +444,33 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 2a. No member matches the keyword(s).  
-  Treasura shows message: *0 persons listed!*.  
+  Treasura shows message: *0 members listed!*.  
   Use case ends.
+  **Use case: View member details**
+
+1. User enters `view INDEX`.
+2. Treasura shows full details of the specified member.
+   Use case ends.
+
+Extensions:
+- 1a. Index invalid → *Invalid member index.* Use case ends.
+
+---
+
+**Use case: List all active members**
+
+1. User enters `list`.
+2. Treasura displays all non-archived members.
+   Use case ends.
+
+---
+
+**Use case: List archived members**
+
+1. User enters `listarchived`.
+2. Treasura displays only archived members.
+   Use case ends.
+---
 
 ### Payment Management Use Cases
 
@@ -471,7 +490,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 2a. Any index is invalid.  
-  Treasura shows error: *The person index(es) provided is invalid*.  
+  Treasura shows error: *The member index(es) provided is invalid*.  
   Use case ends.
 
 * 2b. Date or amount format is invalid.  
@@ -495,11 +514,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 1a. Member index is invalid.  
-  Treasura shows error: *The person index(es) provided is invalid*.  
+  Treasura shows error: *The member index(es) provided is invalid*.  
   Use case ends.
 
 * 3a. Payment index does not exist.  
-  Treasura shows error: *Payment index is invalid for this person*.  
+  Treasura shows error: *Payment index is invalid for this member*.  
   Use case ends.
 
 * 4a. New date is invalid.  
@@ -526,7 +545,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   Use case ends.
 
 * 2b. Invalid payment index.  
-  Treasura shows error: *Invalid payment index #[INDEX] for person: [NAME]*.  
+  Treasura shows error: *Invalid payment index #[INDEX] for member: [NAME]*.  
   Use case ends.
 
 ---
@@ -544,7 +563,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 1a. Invalid member index.  
-  Treasura shows error: *The person index(es) provided is invalid*.  
+  Treasura shows error: *The member index(es) provided is invalid*.  
   Use case ends.
 
 * 2a. Member has no payment records.  
@@ -584,7 +603,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 1a. Invalid member index.  
-  Treasura shows error: *The person index(es) provided is invalid*.  
+  Treasura shows error: *The member index(es) provided is invalid*.  
   Use case ends.
 
 * 2a. No payments match the filters.  
@@ -655,11 +674,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ### Non-Functional Requirements
 
 ### 1. Data Requirements
-* **Data Volatility** — Person and payment data should be stored persistently and remain intact between sessions.  
+* **Data Volatility** — Member and payment data should be stored persistently and remain intact between sessions.  
   Data changes (add, edit, archive, payment updates) are only committed upon successful command execution.
 * **Data Consistency** — The system must prevent conflicting updates (e.g., deleting a payment after it was archived).  
   Undo/redo operations must preserve logical consistency across all entities.
-* **Data Integrity** — Each person must have a unique combination of `Name` and `Matriculation Number`.  
+* **Data Integrity** — Each member must have a unique combination of `Name` and `Matriculation Number`.  
   Archived records must retain their associated payments for traceability.
 * **Data Security** — User data is stored locally in JSON format. The application does not transmit any data externally.
 * **Data Recoverability** — In the event of an abnormal termination, the most recent successful state should be recoverable upon restart.
@@ -679,15 +698,16 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 ### 3. Performance Requirements
 * **Startup Time** — The application should launch and display the active list within **≤ 2 seconds** on a typical laptop.
 * **Command Latency** — Each command (`archive`, `unarchive`, `find`, `addpayment`, `deletepayment`, etc.) must execute within **≤ 150 ms** for a dataset of  
-  up to **5,000 persons** and **20 payments per person**.
+  up to **5,000 members** and **20 payments per member**.
 * **Undo/Redo Depth** — The undo/redo system must support **at least 20 reversible steps** without performance degradation.
-* **Responsiveness** — UI updates (switching between active/archived views) should occur instantly upon command completion.
+* **Responsiveness** — UI updates should be reflected on the screen within 200 ms of user interaction
+* **Storage Efficiency** — The application should remain performant and responsive even with file sizes up to **10 MB**.
 * **Storage Efficiency** — The application should remain performant and responsive even with file sizes up to **10 MB**.
 
 ---
 
 ### 4. Scalability Requirements
-* **Data Volume** — The system must handle at least **1,000 active persons** and **20,000 total payments** with no noticeable slowdown.
+* **Data Volume** — The system must handle at least **1,000 active members** and **20,000 total payments** with no noticeable slowdown.
 * **Feature Scalability** — The architecture should support future extensions such as `export`, `import`, or `statistics` without affecting core logic.
 * **Storage Format** — The JSON-based storage can be evolved (e.g., adding new fields) while maintaining backward compatibility through the adapter pattern.
 * **Multi-entity Extension** — The system can be extended to support new entity types (e.g., CCA Events, Expenses) using the existing command framework.
@@ -719,9 +739,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * **Mainstream OS** — Commonly used operating systems such as **Windows**, **Linux**, **Unix**, and **macOS**.
 * **Student ID** — A unique identification code assigned to each **NUS student** (e.g., A0123456X).
 * **CCA** — Stands for *Co-Curricular Activity*; refers to a **student club, society, or organization** in NUS.
-* **Archived Person** — A person who has been soft-deleted from the active list but remains in storage for record-keeping.
-* **Payment Record** — A transaction entry associated with a person, containing an **amount**, **date**, and optional **remarks**.
-* **Predicate** — A filtering condition used in the app’s logic layer to determine which persons are displayed in the UI.
+* **Archived member** — A member who has been soft-deleted from the active list but remains in storage for record-keeping.
+* **Payment Record** — A transaction entry associated with a member, containing an **amount**, **date**, and optional **remarks**.
+* **Predicate** — A filtering condition used in the app’s logic layer to determine which members are displayed in the UI.
 * **Command Word** — The keyword used to trigger a command (e.g., `archive`, `find`, `undo`).
 * **Model** — The component responsible for holding data and business logic; updates the UI through observable lists.
 * **View** — The user interface layer that reflects the current state of the model (e.g., active list, archived list, payment view).
@@ -763,7 +783,7 @@ Add a simple visual dashboard summarizing all payments (e.g., total collected, o
    Some error messages are overly generic, returning only the correct command format. Future updates will provide more specific feedback that identifies the exact cause of the error.
 
 4. **Enforce `viewpayment` Precondition:**  
-   Currently, `editpayment` and `archivepayment` can be used without viewing a person’s payment list first. This will be fixed by requiring `viewpayment` before editing or deleting payments, ensuring users act within the correct context.
+   Currently, `editpayment` and `deletepayment` can be used without viewing a member’s payment list first. This will be fixed by requiring `viewpayment` before editing or deleting payments, ensuring users act within the correct context.
 
 5. **Improve Date Validation Feedback:**  
    The same error message is shown for both invalid date formats and future dates. Future versions will distinguish between the two:
@@ -786,9 +806,9 @@ Add a simple visual dashboard summarizing all payments (e.g., total collected, o
 
 ### Overview
 The project builds on the AddressBook Level 3 (AB3) foundation but significantly expands its scope and complexity.  
-While AB3 manages a single entity type (`Person`), our project introduces **multiple entity states and relationships**:
-* **Archived vs Active persons** with distinct filters, views, and persistence logic.
-* **Payment records** linked to each person, with support for amount, date, and remarks fields.
+While AB3 manages a single entity type (`Member`), our project introduces **multiple entity states and relationships**:
+* **Archived vs Active members** with distinct filters, views, and persistence logic.
+* **Payment records** linked to each Member, with support for amount, date, and remarks fields.
 * **Undo/Redo** functionality for all mutating commands, increasing both user convenience and implementation complexity.
 
 These extensions required architectural changes across the `Model`, `Logic`, `Storage`, and `UI` layers, while maintaining compatibility with the existing AB3 command architecture.
@@ -797,16 +817,16 @@ These extensions required architectural changes across the `Model`, `Logic`, `St
 
 ### Challenges Faced
 1. **Multi-file updates and merge conflicts**  
-   Introducing new attributes (e.g., `archived` flag, payment list) required synchronized updates across the `Person`, `JsonAdaptedPerson`, `Storage`, and `Ui` classes.  
+   Introducing new attributes (e.g., `archived` flag, payment list) required synchronized updates across the `Member`, `JsonAdaptedPerson`, `Storage`, and `Ui` classes.  
    Coordinating these updates required coordination and communication to minimise merge conflicts and overwrites.
 
 2. **Payment interface design**  
-   Designing a flexible payment model that stores multiple payments per person with amount, date, and optional remarks demanded careful consideration of immutability and display ordering.  
+   Designing a flexible payment model that stores multiple payments per member with amount, date, and optional remarks demanded careful consideration of immutability and display ordering.  
    Commands like `addpayment`, `deletepayment`, `editpayment`, and `viewpayment` required custom parsing and validation logic distinct from AB3’s single-field operations.
 
 3. **Archived/Active view management**  
    Implementing `archive`, `unarchive`, and `listarchived` introduced the need for dynamic predicate switching (`PREDICATE_SHOW_ACTIVE_PERSONS` vs `PREDICATE_SHOW_ARCHIVED_PERSONS`).  
-   Ensuring that archived persons were excluded from normal search and list results, while still being able to manage their payments required defensive programming and extensive testing across commands.
+   Ensuring that archived members were excluded from normal search and list results, while still being able to manage their payments required defensive programming and extensive testing across commands.
 
 4. **Undo/Redo functionality**  
    Maintaining consistent application state after consecutive undo/redo operations required snapshot-based history tracking in the `Model`.  
@@ -823,7 +843,7 @@ These extensions required architectural changes across the `Model`, `Logic`, `St
 * **Collaboration effort:** frequent merges and PR reviews to maintain consistent architecture and coding standards.
 
 **Key achievements:**
-* Successfully implemented **two distinct views** for archived and active persons.
+* Successfully implemented **two distinct views** for archived and active members.
 * Created a robust **payment interface** that tracks transaction amount, date, and remarks.
 * Added **undo/redo** functionality, improving user experience and reliability.
 * Enhanced test coverage and logging, ensuring stability under edge cases.
