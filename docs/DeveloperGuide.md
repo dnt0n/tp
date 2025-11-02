@@ -359,7 +359,6 @@ High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have
 1. User requests to edit details of a specific member using their index.
 2. Treasura validates the input.
 3. Treasura updates the member record.
-4. Treasura displays confirmation of the update.
 
    Use case ends.
 
@@ -445,7 +444,8 @@ High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have
 * 2a. No member matches the keyword(s).  
   Treasura shows message: *0 members listed!*.  
   Use case ends.
-  **Use case: View member details**
+  
+**Use case: View member details**
 
 1. User enters `view INDEX`.
 2. Treasura shows full details of the specified member.
