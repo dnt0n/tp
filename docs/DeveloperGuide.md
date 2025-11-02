@@ -444,6 +444,8 @@ High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have
 * 2a. No member matches the keyword(s).  
   Treasura shows message: *0 members listed!*.  
   Use case ends.
+
+---
   
 **Use case: View member details**
 
