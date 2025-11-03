@@ -4,6 +4,7 @@ skinparam arrowThickness 1.1
 skinparam arrowColor MODEL_COLOR
 skinparam classBackgroundColor MODEL_COLOR
 
+' Existing structure
 AddressBook *-right-> "1" UniquePersonList
 AddressBook *-right-> "1" UniqueTagList
 UniqueTagList -[hidden]down- UniquePersonList
@@ -13,9 +14,18 @@ UniqueTagList -right-> "*" Tag
 UniquePersonList -right-> Person
 
 Person -up-> "*" Tag
-
 Person *--> Name
 Person *--> Phone
 Person *--> Email
 Person *--> MatriculationNumber
+
+' --- New payment-related classes ---
+AddressBook *-down-> "1" UniquePaymentList
+UniquePaymentList -down-> Payment
+
+Payment *--> Amount
+Payment *--> Date
+Payment *--> Description
+Payment --> "1" Person : associatedWith
+
 @enduml
