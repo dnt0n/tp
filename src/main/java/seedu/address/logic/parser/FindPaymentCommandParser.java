@@ -7,10 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PAYMENT_REMARKS;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.FindPaymentCommand;
@@ -61,8 +58,6 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
     public FindPaymentCommand parse(String args) throws ParseException {
         ArgumentMultimap argMap = ArgumentTokenizer.tokenize(
                 args, PREFIX_PAYMENT_AMOUNT, PREFIX_PAYMENT_REMARKS, PREFIX_PAYMENT_DATE);
-
-        checkForUnknownPrefixes(args);
 
         Index targetIndex = parseIndex(argMap);
         validatePrefixUsage(argMap);
@@ -143,23 +138,6 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
 
         LocalDate date = parseDate(dateVal.get());
         return new FindPaymentCommand(index, null, null, date);
-    }
-
-    /**
-     * Checks for unknown or unsupported prefixes in the raw argument string.
-     *
-     * @param args full argument string provided by the user.
-     * @throws ParseException if an unrecognized prefix is found.
-     */
-    private void checkForUnknownPrefixes(String args) throws ParseException {
-        Matcher matcher = Pattern.compile("\\b([a-zA-Z]{1,5}/)").matcher(args);
-        while (matcher.find()) {
-            String prefix = matcher.group(1);
-            boolean isKnown = Arrays.stream(VALID_PREFIXES).anyMatch(prefix::equals);
-            if (!isKnown) {
-                throw new ParseException(String.format(MESSAGE_UNKNOWN_PREFIX, prefix));
-            }
-        }
     }
 
     /**
