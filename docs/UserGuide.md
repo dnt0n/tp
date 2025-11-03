@@ -492,7 +492,7 @@ View a member's details in the result box.
 * After using the command, the member's name, phone number, email, matric number, tags, archive status and number of payments wil be displayed.
 
 **Examples:**
-* `view 1` provides the detail summary for the 1st person in the archived list.
+* `view 1` provides the detail summary for the 1st person in the current displayed list.
 
 <!-- @@author -->
 
