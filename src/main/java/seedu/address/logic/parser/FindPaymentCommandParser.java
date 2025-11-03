@@ -7,10 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PAYMENT_REMARKS;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.FindPaymentCommand;
