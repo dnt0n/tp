@@ -25,7 +25,7 @@ public class PersonFormatter {
 
         sb.append("Status: ").append(person.isArchived() ? "Archived" : "Active").append("\n");
 
-        sb.append("Payments: ").append(person.getPayments().size()).append(" total");
+        sb.append("Payments: ").append(person.getPayments().size()).append(" total").append("\n");
 
         // include latest payment info if available
         person.getLatestPayment().ifPresent(latest ->
