@@ -63,7 +63,8 @@ public class ViewPaymentCommand extends Command {
                         BigDecimal total = p.getPayments().stream()
                                 .map(pay -> pay.getAmount().asBigDecimal())
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-                        return String.format("- %s: $%s", p.getName(), total.toPlainString());
+                        return String.format("- %s%s: $%s", p.isArchived() ? "[Archived] " : "",
+                                p.getName(), total.toPlainString());
                     })
                     .collect(Collectors.joining("\n"));
 
