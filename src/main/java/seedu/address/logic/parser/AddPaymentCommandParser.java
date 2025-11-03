@@ -26,9 +26,10 @@ import seedu.address.model.payment.Amount;
 public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
 
     public static final String MESSAGE_INVALID_AMOUNT =
-        "Amount must be positive and have at most 2 decimal places!";
+        "Amount must be a positive number and have at most 2 decimal places!";
     public static final String MESSAGE_INVALID_DATE =
         "Invalid date. Please use the strict format YYYY-MM-DD (e.g., 2025-01-01) and ensure it is not in the future.";
+    public static final String MESSAGE_INVALID_REMARKS = "Remarks must be at most 70 characters long";
 
     @Override
     public AddPaymentCommand parse(String args) throws ParseException {
@@ -45,6 +46,7 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
         Amount amount = parseAmount(map.getValue(PREFIX_PAYMENT_AMOUNT).get());
         LocalDate date = parseDate(map.getValue(PREFIX_PAYMENT_DATE).get());
         String remarks = map.getValue(PREFIX_PAYMENT_REMARKS).orElse(null);
+        validateRemarks(remarks);
 
         // Step 4: Build and return command
         return new AddPaymentCommand(indexes, amount, date, remarks);
@@ -98,6 +100,12 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
             return Amount.parse(amountStr);
         } catch (IllegalArgumentException ex) {
             throw new ParseException(MESSAGE_INVALID_AMOUNT, ex);
+        }
+    }
+
+    private void validateRemarks(String remarkStr) throws ParseException {
+        if (remarkStr != null && remarkStr.length() >= 70) {
+            throw new ParseException(MESSAGE_INVALID_REMARKS);
         }
     }
 
