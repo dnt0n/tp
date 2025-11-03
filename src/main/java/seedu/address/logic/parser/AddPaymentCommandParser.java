@@ -104,7 +104,7 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
     }
 
     private void validateRemarks(String remarkStr) throws ParseException {
-        if (remarkStr != null && remarkStr.length() >= 100) {
+        if (remarkStr != null && remarkStr.length() > 100) {
             throw new ParseException(MESSAGE_INVALID_REMARKS);
         }
     }
