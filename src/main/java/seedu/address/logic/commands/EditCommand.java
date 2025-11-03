@@ -6,8 +6,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_MATRICULATIONNUMBER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PERSONS;
-import static seedu.address.model.Model.PREDICATE_SHOW_ARCHIVED_PERSONS;
 
 import java.util.Collections;
 import java.util.HashSet;
