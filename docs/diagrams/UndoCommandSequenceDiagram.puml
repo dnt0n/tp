@@ -72,9 +72,6 @@ alt can undo?
   Model --> LogicManager : ReadOnlyAddressBook
   deactivate Model
 
-  LogicManager -> Storage : saveAddressBook(ab)  ' if your design saves on undo
-  return
-
   create CommandResult
   LogicManager -> CommandResult : "Undone last action"
   activate CommandResult
