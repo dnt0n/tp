@@ -83,7 +83,7 @@ public class EditPaymentCommandParser implements Parser<EditPaymentCommand> {
         try {
             return Amount.parse(s.trim());
         } catch (IllegalArgumentException ex) {
-            throw new ParseException("Invalid amount. Example: a/10.50");
+            throw new ParseException("Invalid amount: must be positive, ≤ 2 decimal places, and at most 1 million.");
         }
     }
 

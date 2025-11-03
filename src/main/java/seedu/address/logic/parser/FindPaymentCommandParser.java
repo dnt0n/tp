@@ -36,7 +36,7 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
     private static final String MESSAGE_TOO_MANY_FILTERS =
             "Please specify only one filter at a time.";
     private static final String MESSAGE_INVALID_AMOUNT =
-            "Invalid amount: must be positive and ≤ 2 decimal places.";
+            "Invalid amount: must be positive, ≤ 2 decimal places, and at most 1 million.";
     private static final String MESSAGE_INVALID_DATE =
             "Invalid date. Please use the strict format YYYY-MM-DD and ensure it is not in the future.";
     private static final String MESSAGE_EMPTY_REMARK = "Remark cannot be empty.";

@@ -55,7 +55,7 @@ public class FindPaymentCommandParserTest {
     @Test
     public void parse_invalidAmount_throwsParseException() {
         ParseException e = assertThrows(ParseException.class, () -> parser.parse("1 a/abc"));
-        assertEquals("Invalid amount: must be positive and ≤ 2 decimal places.", e.getMessage());
+        assertEquals("Invalid amount: must be positive, ≤ 2 decimal places, and at most 1 million.", e.getMessage());
     }
 
     @Test

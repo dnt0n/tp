@@ -26,7 +26,7 @@ import seedu.address.model.payment.Amount;
 public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
 
     public static final String MESSAGE_INVALID_AMOUNT =
-        "Amount must be a positive number and have at most 2 decimal places!";
+        "Invalid amount (must be positive, up to 2 decimal places, and at most 1 million).";
     public static final String MESSAGE_INVALID_DATE =
         "Invalid date. Please use the strict format YYYY-MM-DD (e.g., 2025-01-01) and ensure it is not in the future.";
     public static final String MESSAGE_INVALID_REMARKS = "Remarks must be at most 70 characters long";
