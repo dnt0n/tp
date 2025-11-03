@@ -6,7 +6,8 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_MATRICULATIONNUMBER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
+import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PERSONS;
+import static seedu.address.model.Model.PREDICATE_SHOW_ARCHIVED_PERSONS;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -99,7 +100,11 @@ public class EditCommand extends Command {
         }
 
         model.setPerson(personToEdit, editedPerson);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        if (editedPerson.isArchived()) {
+            model.updateFilteredPersonList(PREDICATE_SHOW_ARCHIVED_PERSONS);
+        } else {
+            model.updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
+        }
 
         logger.info(String.format("Successfully edited person: [%s → %s]",
             personToEdit.getMatriculationNumber(), editedPerson.getMatriculationNumber()));
