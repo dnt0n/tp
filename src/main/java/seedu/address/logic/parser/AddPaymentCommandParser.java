@@ -29,7 +29,7 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
         "Invalid amount (must be positive, up to 2 decimal places, and at most 1 million).";
     public static final String MESSAGE_INVALID_DATE =
         "Invalid date. Please use the strict format YYYY-MM-DD (e.g., 2025-01-01) and ensure it is not in the future.";
-    public static final String MESSAGE_INVALID_REMARKS = "Remarks must be at most 70 characters long";
+    public static final String MESSAGE_INVALID_REMARKS = "Remarks must be at most 100 characters long";
 
     @Override
     public AddPaymentCommand parse(String args) throws ParseException {
@@ -104,7 +104,7 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
     }
 
     private void validateRemarks(String remarkStr) throws ParseException {
-        if (remarkStr != null && remarkStr.length() >= 70) {
+        if (remarkStr != null && remarkStr.length() > 100) {
             throw new ParseException(MESSAGE_INVALID_REMARKS);
         }
     }

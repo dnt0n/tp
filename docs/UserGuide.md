@@ -770,7 +770,7 @@ Furthermore, certain edits can cause the Treasura to behave in unexpected ways (
 
 | Param           | Format                                | Limits                    | Notes                     |
 | --------------- | ------------------------------------- |---------------------------| ------------------------- |
-| `NAME`          | Printable chars, trimmed              | 1–70 chars                | No newline                |
+| `NAME`          | Printable chars, trimmed              | 1–100 chars               | No newline                |
 | `PHONE`         | Positive digits, e.g. 87654321        | 8 digits                  | No special character (+)  |
 | `EMAIL`         | One `@`, has `.`                      | 5–100 chars               | Case preserved            |
 | `MATRIC`        | `^A\d{7}[A-Z]$`                       | 9 chars                   | Must be unique            |
@@ -779,7 +779,7 @@ Furthermore, certain edits can cause the Treasura to behave in unexpected ways (
 | `PAYMENT_INDEX` | Positive int from `viewpayment`       | 1…payment count           | 1-based                   |
 | `AMOUNT`        | Decimal, ≤2 dp                        | 0.01–1,000,000.00         | No zero or negative       |
 | `DATE`          | `YYYY-MM-DD`, valid                   | 1970-01-01 to today       | No future dates           |
-| `REMARKS`       | Printable, trimmed                    | 0–70 chars                | —                         |
+| `REMARKS`       | Printable, trimmed                    | 0–100 chars               | —                         |
 | `KEYWORD`       | Space-separated tokens                | 1–30 chars each, ≤10      | Name field only, OR match |
 | `a/`            | Amount exact                          | —                         | Same as `AMOUNT`          |
 | `d/`            | Date exact                            | —                         | Same as `DATE`            |

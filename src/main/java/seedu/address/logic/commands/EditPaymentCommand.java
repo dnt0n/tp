@@ -35,7 +35,7 @@ public class EditPaymentCommand extends Command {
 
     public static final String MESSAGE_NO_FIELDS = "At least one of a/, d/, r/ must be provided.";
     public static final String MESSAGE_INVALID_PAYMENT_INDEX = "Payment index is invalid for this person.";
-    public static final String MESSAGE_SUCCESS = "Edited payment p/%d for %s";
+    public static final String MESSAGE_SUCCESS = "Edited payment p/%d for %s. Original payment: %s, new payment: %s";
 
     private static final Logger logger = LogsCenter.getLogger(EditPaymentCommand.class);
 
@@ -81,6 +81,10 @@ public class EditPaymentCommand extends Command {
         Payment original = displayList.get(displayZero);
         Payment edited = createEditedPayment(original, descriptor);
 
+        if (original.equals(edited)) {
+            throw new CommandException("The original payment is the same as the edited payment!");
+        }
+
         // Find the original in the raw list and replace at that index
         int rawIndex = target.getPayments().indexOf(original);
         if (rawIndex < 0) {
@@ -91,7 +95,8 @@ public class EditPaymentCommand extends Command {
         Person updated = target.withEditedPayment(rawIndex, edited);
         model.setPerson(target, updated);
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS, paymentOneBased, updated.getName()));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, paymentOneBased, updated.getName(),
+                original.toString(), edited.toString()));
     }
 
     /**
