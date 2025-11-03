@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 public final class Amount implements Comparable<Amount> {
     public static final String MESSAGE_CONSTRAINTS =
-        "Invalid amount (must be positive, up to 2 decimal places, and at most 1 million).";
+        "Invalid amount (must be a positive number, up to 2 decimal places, and at most 1 million).";
     public static final int SCALE = 2;
 
     private final BigDecimal value;
