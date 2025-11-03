@@ -123,7 +123,7 @@ How the parsing works:
 
 The `Model` component,
 
-* stores the address boo![img.png](img.png)k data i.e., all `Member` objects (which are contained in a `UniquePersonList` object).
+* stores the Treasura data i.e., all `Member` objects (which are contained in a `UniquePersonList` object).
 * stores the currently 'selected' `Member` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Member>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
@@ -238,7 +238,7 @@ How the `addpayment` command works:
 **Validation highlights**
 - **Indices:** Must refer to members in the current displayed list; invalid indices cause the command to fail without partial writes.
 - **Amount:** Must be a non-negative monetary value with up to two decimal places.
-- **Date:** Must follow the accepted format (e.g., `YYYY-MM-DD`) and be a valid calendar date.
+- **Date:** Must follow the accepted format (e.g., `YYYY-MM-DD`) and be a valid calendar date that is not in the future.
 - **Remark:** Free text; excessively long remarks may be truncated or rejected depending on constraints.
 
 </box>
@@ -316,11 +316,10 @@ High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have
 | `* * *`  | CCA Treasurer | search for members by name or tag        | find records quickly                             |
 | `* * *`  | CCA Treasurer | archive inactive members                 | keep my records clean and uncluttered            |
 | `* * *`  | CCA Treasurer | record payments from members             | know who has paid fees                           |
+| `* * *`  | CCA Treasurer | delete payment from a member             | delete unintended payment                        |
 | `* * *`  | CCA Treasurer | see the time and date of payments        | track payments chronologically                   |
-| `* * *`  | CCA Treasurer | add expenses for CCA purchases           | streamline bookkeeping and avoid manual tracking |
-| `* * *`  | CCA Treasurer | archive expenses for CCA purchases       | archive unwanted data                            |
+| `* * *`  | CCA Treasurer | search for payments                      | find payment records                             |
 | `* * *`  | CCA Treasurer | sync data automatically when back online | avoid manual backups                             |
-| `* * *`  | CCA Treasurer | archive payment from a member            | archive unintended payment                       |
 
 
 ## Use cases
@@ -339,7 +338,6 @@ High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have
 1. User requests to add a member by specifying details (name, matric number, phone, email, etc.).
 2. Treasura validates all input fields.
 3. Treasura adds the member to the active list.
-4. Treasura confirms the addition with a success message.
 
    Use case ends.
 
@@ -360,7 +358,6 @@ High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have
 1. User requests to edit details of a specific member using their index.
 2. Treasura validates the input.
 3. Treasura updates the member record.
-4. Treasura displays confirmation of the update.
 
    Use case ends.
 
@@ -392,7 +389,7 @@ High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have
   Use case ends.
 
 * 3a. The specified index is invalid (non-integer or out of range).  
-  Treasura shows error: *The member index(es) provided is invalid*
+  Treasura shows error: *The member index(es) provided is invalid*.
   Use case ends.
 
 * 4a. The specified member is already archived.  
@@ -446,7 +443,10 @@ High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have
 * 2a. No member matches the keyword(s).  
   Treasura shows message: *0 members listed!*.  
   Use case ends.
-  **Use case: View member details**
+
+---
+  
+**Use case: View member details**
 
 1. User enters `view INDEX`.
 2. Treasura shows full details of the specified member.
@@ -629,11 +629,13 @@ Extensions:
 **Extensions**
 
 * 1a. There is no action to undo.  
-  Treasura shows error: *Nothing to undo*.  
+  Treasura shows error: *Nothing to undo*.
+  
   Use case ends.
 
 * 2a. The last command is not undoable (e.g., non-state-changing action).  
-  Treasura shows error: *Last action cannot be undone*.  
+  Treasura will undo the last mutating action (e.g., the user performs "addpayment" -> "list". "addpayment" will be undone).
+
   Use case ends.
 
 ---
