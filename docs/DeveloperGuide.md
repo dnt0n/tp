@@ -13,7 +13,7 @@
 
 ## **Acknowledgements**
 
-_{ list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well }_
+This project is based on the AddressBook-Level3 project created by the [_SE-EDU initiative_](https://se-education.org/).
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -73,14 +73,14 @@ The **API** of this component is specified in [`Ui.java`](https://github.com/se-
 
 The UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `ResultDisplay`, `PersonListPanel`, `StatusBarFooter` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class which captures the commonalities between classes that represent parts of the visible GUI.
 
-The `UI` component uses the JavaFx UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/resources/view/MainWindow.fxml)
+The `UI` component uses the JavaFX UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/resources/view/MainWindow.fxml)
 
 The `UI` component,
 
 * executes user commands using the `Logic` component.
 * listens for changes to `Model` data so that the UI can be updated with the modified data.
 * keeps a reference to the `Logic` component, because the `UI` relies on the `Logic` to execute commands.
-* depends on some classes in the `Model` component, as it displays `Member` object residing in the `Model`.
+* depends on some classes in the `Model` component, as it displays `Person` object residing in the `Model`.
 
 ### Logic component
 
@@ -112,8 +112,8 @@ Here are the other classes in `Logic` (omitted from the class diagram above) tha
 <puml src="diagrams/ParserClasses.puml" width="600"/>
 
 How the parsing works:
-* When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
-* All `XYZCommandParser` classes (e.g., `AddCommandParser`, `archiveCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
+* When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddMemberCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddMemberCommand`) which the `AddressBookParser` returns back as a `Command` object.
+* All `XYZCommandParser` classes (e.g., `AddMemberCommandParser`, `archiveCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
 
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
@@ -123,12 +123,29 @@ How the parsing works:
 
 The `Model` component,
 
-* stores the Treasura data i.e., all `Member` objects (which are contained in a `UniquePersonList` object).
-* stores the currently 'selected' `Member` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Member>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
+* stores the Treasura data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
+* stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
 <puml src="diagrams/BetterModelClassDiagram.puml" width="450" />
+
+**Note on terminology**
+
+Treasura uses the class `Person` internally because it is inherited from AddressBook Level 3 (AB3).  
+However, in the context of this project:
+
+| Context | Term Used |
+|---------|-----------|
+| What the user interacts with / what the CCA treasurer sees | **Member** |
+| What the codebase, model classes, and UML refer to | **Person** (`Person`, `UniquePersonList`, etc.) |
+
+For example:
+- In this Developer Guide and User Guide, we say **“archive a member”**, **“add a member”**, etc.
+- In diagrams, method names, and code (`model.setPerson(...)`, `getFilteredPersonList()`), the AB3 class name **`Person`** is retained for accuracy.
+
+Future developers should treat **Member ≡ Person** in meaning. The difference is only in naming (user-facing vs internal code).
+
 
 
 
@@ -167,19 +184,20 @@ The sequence diagram below illustrates the interactions within the `Logic` compo
 
 </box>
 
-How the `add` command works:
+How the `AddMember` command works:
 1. When the user enters an `add` command, `LogicManager` passes it to `AddressBookParser`.
 2. `AddressBookParser` creates an `AddMemberCommandParser` to parse the command arguments.
 3. `AddMemberCommandParser` validates and parses arguments.
-4. An `add` object is created and executed.
+4. An `AddMember` object is created and executed.
 5. Before execution, the current state is committed for undo/redo functionality.
-6. `add` checks if the current MATRICNUM already exists for the specified student(s).
+6. `AddMember` checks if the current matric number already exists for the specified student(s).
 7. If no duplicates are found, the member is added to the system.
 8. The updated Treasura is saved to storage.
 
 ### Archive feature
 
-The archive feature allows Treasura users to **soft-delete (archive)** a member in the system so they no longer appear in the active list while preserving their data.
+The archive feature allows Treasura users to **soft-delete (archive) a member**.  
+Internally, this works by updating the `Person` object’s `archived` flag to `true`.
 
 The sequence diagram below illustrates the interactions within the `Logic` component for archiving members.
 
@@ -191,16 +209,15 @@ The sequence diagram below illustrates the interactions within the `Logic` compo
 
 </box>
 
-How the `archive` command works:
-1. When the user enters an `archive` command, `LogicManager` passes the user input to `AddressBookParser`.
-2. `AddressBookParser` creates an `ArchiveCommandParser` to parse the command arguments.
-3. `ArchiveCommandParser` validates and parses arguments (e.g., the member index).
-4. An `ArchiveCommand` object is constructed and returned to `LogicManager`.
-5. Before execution, the current state of the model is **committed** to support Undo/Redo.
-6. `ArchiveCommand` retrieves the target member and checks that the member **exists** and is **not already archived**.
-7. If validation passes, the member is **marked as archived** (soft-deleted) and the filtered list is updated accordingly.
-8. The updated Treasura is **saved to storage**, and a success message is returned to the user.
-
+How it works:
+1. User enters `archive 1`.
+2. `LogicManager` passes this to `AddressBookParser`.
+3. `ArchiveCommandParser` parses the index of the member.
+4. An `ArchiveCommand` is created.
+5. Before modifying data, the current state of the model is saved for Undo/Redo.
+6. `ArchiveCommand` retrieves the target member from `model.getFilteredPersonList()` — internally this is a `Person` object.
+7. A new `Person` object is created using `withArchived(true)` and saved via `model.setPerson(...)`.
+8. The archived member is removed from the active filtered list and saved to storage.
 ### AddPayment feature
 
 The add payment feature allows Treasura users to **record a new payment** for one or more members in a single command.
@@ -262,7 +279,7 @@ How the `viewpayment` command works:
 2. `LogicManager` delegates to `ViewPaymentCommandParser` to parse the argument (the target member index).
 3. The parser validates the index and constructs a `ViewPaymentCommand`.
 4. `ViewPaymentCommand#execute(model)` retrieves the current list of members via `model.getFilteredPersonList()`.
-5. The target `Member` is resolved from the displayed list, and the member’s `getPayments()` is invoked to fetch their payments.
+5. The target `Person` is resolved from the displayed list, and the member’s `getPayments()` is invoked to fetch their payments.
 6. A `CommandResult` containing a **summary string** (e.g., a header and/or count) is returned to the UI.
 7. The UI **renders the list of payments** for the selected member.
 
@@ -298,10 +315,9 @@ How the `viewpayment` command works:
 * can type fast
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
-* is in charge of managing multiple member expenses
-* is in charge of handling CCA expenses
+* is in charge of managing multiple member payments
 
-**Value proposition**: Provides treasurers with a fast, command-driven way to track members, attendance, and payments without heavy accounting tools.
+**Value proposition**: Provides treasurers with a fast, command-driven way to track members, and payments without heavy accounting tools.
 
 
 ### User stories
@@ -309,17 +325,17 @@ How the `viewpayment` command works:
 **Priorities:**  
 High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …        | I want to …                              | So that I can…                                   |
-|----------|---------------|------------------------------------------|--------------------------------------------------|
-| `* * *`  | CCA Treasurer | add new member details                   | build my membership list                         |
-| `* * *`  | CCA Treasurer | view member details                      | keep track of members                            |
-| `* * *`  | CCA Treasurer | search for members by name or tag        | find records quickly                             |
-| `* * *`  | CCA Treasurer | archive inactive members                 | keep my records clean and uncluttered            |
-| `* * *`  | CCA Treasurer | record payments from members             | know who has paid fees                           |
-| `* * *`  | CCA Treasurer | delete payment from a member             | delete unintended payment                        |
-| `* * *`  | CCA Treasurer | see the time and date of payments        | track payments chronologically                   |
-| `* * *`  | CCA Treasurer | search for payments                      | find payment records                             |
-| `* * *`  | CCA Treasurer | sync data automatically when back online | avoid manual backups                             |
+| Priority | As a …        | I want to …                              | So that I can…                        |
+|----------|---------------|------------------------------------------|---------------------------------------|
+| `* * *`  | CCA Treasurer | add new member details                   | build my membership list              |
+| `* * *`  | CCA Treasurer | view member details                      | keep track of members                 |
+| `* * *`  | CCA Treasurer | search for member by name or tag        | find records quickly                  |
+| `* * *`  | CCA Treasurer | archive inactive member                 | keep my records clean and uncluttered |
+| `* * *`  | CCA Treasurer | record payments from member             | know who has paid fees                |
+| `* * *`  | CCA Treasurer | delete payment from a member             | delete unintended payment             |
+| `* * *`  | CCA Treasurer | see the time and date of payments        | track payments chronologically        |
+| `* * *`  | CCA Treasurer | search for payments                      | find payment records                  |
+| `* * *`  | CCA Treasurer | sync data automatically when back online | avoid manual backups                  |
 
 
 ## Use cases
@@ -453,7 +469,7 @@ High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have
    Use case ends.
 
 Extensions:
-- 1a. Index invalid → *Invalid member index.* Use case ends.
+* 1a. Index invalid → *Invalid member index.* Use case ends.
 
 ---
 
@@ -704,7 +720,6 @@ Extensions:
 * **Undo/Redo Depth** — The undo/redo system must support **at least 20 reversible steps** without performance degradation.
 * **Responsiveness** — UI updates should be reflected on the screen within 200 ms of user interaction
 * **Storage Efficiency** — The application should remain performant and responsive even with file sizes up to **10 MB**.
-* **Storage Efficiency** — The application should remain performant and responsive even with file sizes up to **10 MB**.
 
 ---
 
@@ -712,7 +727,7 @@ Extensions:
 * **Data Volume** — The system must handle at least **1,000 active members** and **20,000 total payments** with no noticeable slowdown.
 * **Feature Scalability** — The architecture should support future extensions such as `export`, `import`, or `statistics` without affecting core logic.
 * **Storage Format** — The JSON-based storage can be evolved (e.g., adding new fields) while maintaining backward compatibility through the adapter pattern.
-* **Multi-entity Extension** — The system can be extended to support new entity types (e.g., CCA Events, Expenses) using the existing command framework.
+* **Multi-entity Extension** — The system can be extended to support new entity types (e.g., CCA Events) using the existing command framework.
 
 ---
 

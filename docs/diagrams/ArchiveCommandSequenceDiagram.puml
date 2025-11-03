@@ -1,27 +1,87 @@
 @startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
 title Simplified Archive Workflow ("archive 1")
 
-actor User
-
-box "Logic" #LightBlue
-participant LogicManager
-participant Parser
-participant ArchiveCommand
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":ArchiveCommandParser" as ArchiveCommandParser LOGIC_COLOR
+participant "ac:ArchiveCommand" as ArchiveCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
 end box
 
-box "Model" #LightGreen
-participant Model
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
 end box
 
-User -> LogicManager : execute("archive 1")
-LogicManager -> Parser : parseCommand("archive 1")
-Parser --> LogicManager : ArchiveCommand
+' === 1. User initiates command ===
+[-> LogicManager : execute("archive 1")
+activate LogicManager
 
-LogicManager -> ArchiveCommand : execute(model)
-ArchiveCommand -> Model : get person at index 1
-ArchiveCommand -> Model : mark person as archived
-ArchiveCommand -> Model : updateFilteredPersonList(active only)
-ArchiveCommand --> LogicManager : CommandResult("Archived: <Name>")
-LogicManager --> User : "Archived: <Name>"
+' === 2. Parsing ===
+LogicManager -> AddressBookParser : parseCommand("archive 1")
+activate AddressBookParser
+
+create ArchiveCommandParser
+AddressBookParser -> ArchiveCommandParser
+activate ArchiveCommandParser
+
+ArchiveCommandParser --> AddressBookParser
+deactivate ArchiveCommandParser
+
+AddressBookParser -> ArchiveCommandParser : parse("1")
+activate ArchiveCommandParser
+
+create ArchiveCommand
+ArchiveCommandParser -> ArchiveCommand
+activate ArchiveCommand
+
+ArchiveCommand --> ArchiveCommandParser
+deactivate ArchiveCommand
+
+ArchiveCommandParser --> AddressBookParser : ac
+deactivate ArchiveCommandParser
+
+ArchiveCommandParser -[hidden]-> AddressBookParser
+destroy ArchiveCommandParser
+
+AddressBookParser --> LogicManager : ac
+deactivate AddressBookParser
+
+' === 3. Execute archive command ===
+LogicManager -> ArchiveCommand : execute(m)
+activate ArchiveCommand
+
+' Optional: if using undo/redo
+ArchiveCommand -> Model : commit()
+activate Model
+Model --> ArchiveCommand
+deactivate Model
+
+ArchiveCommand -> Model : archiveMember(1)
+activate Model
+Model --> ArchiveCommand
+deactivate Model
+
+ArchiveCommand -> Model : updateFilteredPersonList(activeOnly)
+activate Model
+Model --> ArchiveCommand
+deactivate Model
+
+' === 4. Return result ===
+create CommandResult
+ArchiveCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> ArchiveCommand
+deactivate CommandResult
+
+ArchiveCommand --> LogicManager : r
+deactivate ArchiveCommand
+
+[<--LogicManager
+deactivate LogicManager
 
 @enduml
