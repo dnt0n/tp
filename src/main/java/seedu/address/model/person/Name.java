@@ -41,7 +41,7 @@ public class Name {
      */
     public static final String MESSAGE_CONSTRAINTS =
         "Names should only contain alphabetic characters, spaces, hyphens (-), apostrophes ('), "
-            + "and periods (.), should not be blank and should be at most 70 characters long.";
+            + "and periods (.), should not be blank and should be at most 100 characters long.";
 
     /*
      * The name must:
@@ -73,7 +73,7 @@ public class Name {
      * Returns true if a given string is a valid name according to {@link #VALIDATION_REGEX}.
      */
     public static boolean isValidName(String test) {
-        return test.length() <= 70 && test.matches(VALIDATION_REGEX);
+        return test.length() <= 100 && test.matches(VALIDATION_REGEX);
     }
 
     @Override
