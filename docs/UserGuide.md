@@ -17,7 +17,7 @@ Treasura is primarily targeted towards CCA leaders and treasurers. 🎓💼
 --------------------------------------------------------------------------------------------------------------------
 ## 🚀 Quick start
 
-1. Ensure you have Java `17` or above installed in your computer.<br>
+1. Ensure you have Java `17` or above installed on your computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
 2. Download the latest `.jar` file from [here](https://github.com/AY2526S1-CS2103T-W11-2/tp/releases).
@@ -122,6 +122,12 @@ list
 
 and confirms that all new members appear correctly.
 ![new members added](images/NewMembersAdded.png)
+
+<box type="info" seamless>
+
+Note that newly added members will appear at the bottom of the member list.
+</box>
+
 
 ---
 
@@ -228,7 +234,7 @@ undo
 The previous correct state is restored.  
 Alex then re-applies the correct edit carefully.
 
-Note: all commands can be undone using the 'undo' command
+Note: all mutating commands can be undone using the `undo` command
 
 ---
 
@@ -327,9 +333,12 @@ Adds a new member to Treasura.
 `add n/NAME m/MATRICULATION_NUMBER p/PHONE_NUMBER e/EMAIL [t/TAG]…​`
 
 **Notes:**
-* Each **Matriculation Number must be unique**.
+* Each **Matriculation Number must be unique**. This will be the unique identifier for a member.
 * Must follow **NUS format**: `A` + 7 digits + uppercase letter (e.g., `A0123456X`).
 * Tags are optional and can be used for roles (e.g., `exco`, `performer`).
+* Phone numbers must be 8 digits.
+* Emails can be of any form following an @. Edit and undo features are present in the event of typos for email.
+* Newly added members will appear at the bottom of the current list.
 
 **Examples:**
 - `add n/John Doe m/A0123456X p/98765432 e/john@example.com`
@@ -355,7 +364,7 @@ Adding an argument will cause an error!<br>
 <!-- @@author Roshan1572 -->
 
 ### Finding Members: `find`
-Finds members whose names or tags contain the given keywords.
+Finds members whose names or tags match the given keywords.
 
 **Format:**  
 `find KEYWORD [MORE_KEYWORDS]`
@@ -469,6 +478,22 @@ Restores an archived member to the active list.
 
 ![result for 'unarchive 1,2'](images/UnarchiveOutput.png)
 
+---
+
+### Viewing a Member: `view`
+View a member's details in the result box.
+
+**Format:**  
+`view INDEX`
+
+**Notes:**
+* The index refers to the index number shown in the displayed person list.
+* The index **must be a positive integer** 1, 2, 3, …​
+* After using the command, the member's name, phone number, email, matric number, tags, archive status and number of payments wil be displayed.
+
+**Examples:**
+* `view 1` provides the detail summary for the 1st person in the current displayed list.
+
 <!-- @@author -->
 
 ---
@@ -488,8 +513,8 @@ Adds a payment to one or more members specified by their indices.
 **Notes:**
 * The index refers to the member(s) shown in the current displayed list.
 * `a/AMOUNT` is the payment amount in dollars and cents (e.g., 25.00).
-* `d/DATE` follows the `YYYY-MM-DD` format.
-* `[r/REMARKS]` is optional for short notes such as “Membership Fee” or “CCA Shirt”.
+* `d/DATE` follows the `YYYY-MM-DD` format. Invalid and future dates are not allowed.
+* `[r/REMARKS]` is optional for short notes such as “Membership Fee” or “CCA Shirt”. Special characters are allowed.
 * `addpayment` can be performed for archived members using indices from `listarchived`
 
 **Examples:**
@@ -527,29 +552,29 @@ or
 
 **Notes:**
 * Use `viewpayment INDEX` to show all payments made by a single member.
-* Use `viewpayment all` to view payments for every member in the current displayed list.
+* Use `viewpayment all` to view payments for every member in Treasura.
 * If the payment history is too long, feel free to use `findpayment`.
 
 **Examples:**
 * `viewpayment 2` — shows all payments made by the 2nd member.
-* `viewpayment all` — lists all recorded payments in current displayed list.
+* `viewpayment all` — lists all recorded payments in Treasura.
 
 ---
 
 ### Delete payment(s): `deletepayment`
 
-Deletes an existing payment record from one or more members.
+Deletes payment(s) from a specified member index.
 
 **Format:**
-`deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX`
+`deletepayment PERSON_INDEX, p/PAYMENT_INDEX[,PAYMENT_INDEX]...`
 
 **Notes:**
-* `PERSON_INDEX` refers to the member(s).
-* `p/PAYMENT_INDEX` refers to the payment number to delete from each listed member.
+* `PERSON_INDEX` refers to the member.
+* `p/PAYMENT_INDEX` refers to the payment number(s) to delete from the specified member.
 
 **Examples:**
 * `deletepayment 1 p/2` — deletes payment #2 for member #1.
-* `deletepayment 1,3 p/1` — deletes payment #1 for both members #1 and #3.
+* `deletepayment 1 p/1,2,3` — deletes payment #1,2 and 3 for member #1.
 
 <box type="tip" seamless>
 
@@ -566,7 +591,8 @@ Finds payments made by a specific member using filters.
 
 **Notes:**
 * Search within a member’s payment history.
-* Combine filters to narrow results.
+* Find a payment using only **1 filter** at a time. Multiple filters used in the search will be rejected.
+* Finding a payment by remark is case-insensitive
 
 **Examples:**
 - `findpayment 1 a/50.00`
@@ -595,8 +621,8 @@ add n/Ali p/91234567 e/ali@example.com m/A1234567X
 undo                      ← removes the person that was just added
 archive 1,2,3
 undo                      ← restores the archived members to active
-addpayment 1 a/25.00 d/2025-10-21 r/membership
-undo                      ← removes the payment just added
+redo                      ← re-archives the members
+undo                      ← restores the archived members back to active
 ```
 <box type="warning" seamless>
 
@@ -681,10 +707,10 @@ Furthermore, certain edits can cause the Treasura to behave in unexpected ways (
 **A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous Treasura home folder.
 
 **Q**: Can I delete a member?<br>
-**A**: Deleting a member accidentally can wipe out his/her entire payment history, therefor the app only supports archiving a member. You can also use edit command to swap out the details of the unwanted member with that of a new member.
+**A**: Deleting a member accidentally can wipe out his/her entire payment history, therefore the app only supports archiving a member. You can also use edit command to swap out the details of the unwanted member with that of a new member.
 
 **Q**: How do I streamline the process of tracking members and their payments?<br>
-**A**: Adding a tag to members and payments is highly recommended, because it allows you to filter through the members and payments quickly, using find and findpayment commands.
+**A**: Adding a tag to members and a remark to payments is highly recommended, because it allows you to filter through the members and payments quickly, using find and findpayment commands.
 
 **Q**: If I archive a member, will his/her payments be removed?<br>
 **A**: The archived member's payments will be removed from the main payment history, but you can still access them from viewing the payment of the archived list.
@@ -699,7 +725,7 @@ Furthermore, certain edits can cause the Treasura to behave in unexpected ways (
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
 2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
 3. Undo history is cleared upon application restart.
-4. Payment remarks longer than 100 characters may be truncated in UI.
+4. There is a constraint of 100 characters for a name, email, remark or tag. Breaching this limit may cause UI errors and unresponsiveness.
 5. Only one Treasura instance can access a data file at a time - opening multiple windows at once might not save data properly.
 6. Member payments are currently displayed in the command result panel. We will be adding a separate dashboard to view payments seamlessly in the future.
 
