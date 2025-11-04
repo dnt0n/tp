@@ -23,7 +23,8 @@ public class DeletePaymentCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Deletes one or more payments from the person identified by the displayed index.\n"
             + "Parameters: PERSON_INDEX p/PAYMENT_INDEX[,PAYMENT_INDEX]...\n"
-            + "Notes: PAYMENT_INDEX refers to the display order shown by 'viewpayment'. Duplicates are not allowed.\n"
+            + "Notes: PAYMENT_INDEX refers to the display order shown by 'viewpayment'. "
+            + "Duplicates are not allowed. Indexes must be a positive integer.\n"
             + "Example: " + COMMAND_WORD + " 2 p/1,2,3";
 
     public static final String MESSAGE_SUCCESS = "Deleted payment(s) #%s from %s";

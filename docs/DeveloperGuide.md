@@ -796,7 +796,7 @@ Add a simple visual dashboard summarizing all payments (e.g., total collected, o
 2. **Multi-CCA Support:**  
    Allow users to store and switch between different CCAs’ member and payment data using separate storage files.
 
-3. **Refine Error Messages:**  
+3. **Refine error messages:**
    Some error messages are overly generic, returning only the correct command format. Future updates will provide more specific feedback that identifies the exact cause of the error.
 
 4. **Enforce `viewpayment` Precondition:**  
@@ -816,6 +816,12 @@ Add a simple visual dashboard summarizing all payments (e.g., total collected, o
 
 8. **Data Portability & Safe Dataset Reset:**
     Add export/import of full datasets as a single portable snapshot (e.g., JSON/ZIP) and a guarded reset command that wipes only the active dataset after confirmation while auto-backing up the current state. This complements Multi-CCA Support by enabling easy cross-device transfer of a CCA’s records and a clean, auditable way to start fresh for a new cohort without risky manual file operations.
+
+9. **Archive and Unarchive Duplicate indexes:**
+    Our `archive` and `unarchive` currently accept inputs such as `archive 1,1,1,1` or `unarchive 2,2,2,2`. This has no functional impact on the user or program, but may cause confusion to the user. We plan on implementing a fix for this in the future by rejecting duplicate input.
+
+10. **Find returns incorrect message when including special characters as search terms:**
+    When performing a `find` using special characters such as `find @@@###` or `find Alex %%%$$$` will return the result of the search which would be 0 members, or members matching the name or tag "Alex". However, since our names only consist of letters and tags are alphanumeric, special symbols in the search should return an error.
 
 <!-- @@author Roshan1572 -->
 
