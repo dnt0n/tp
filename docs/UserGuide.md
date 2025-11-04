@@ -248,6 +248,7 @@ He uses the `viewpayment all` command to quickly view every recorded payment acr
 viewpayment all
 ```
 <img src="images/ViewPaymentAll.png" alt="view payment all" width="450" />
+(here we assume all members have been unarchived)
 
 Treasura neatly lists all members and their respective total payment, together with a **grand total sum across all payments**.
 
