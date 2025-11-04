@@ -293,6 +293,8 @@ By the end of the session, Alex has:
 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
+  
+* Our commands are case-insensitive. i.e. `AddPayment` and `ADDPAYMENT` will be interpreted as `addpayment`
 
 * Extraneous parameters for commands that do not take in parameters (such as `undo`, `list`, `exit`) will return an error if a parameter is given.<br>
   e.g. if the command specifies `undo 123`, it will cause an error.
