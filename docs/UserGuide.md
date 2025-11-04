@@ -8,7 +8,7 @@
 
 Treasura is a **desktop app for managing CCA members and payments, optimized for use via a Command Line Interface (CLI)** while still having the benefits of a Graphical User Interface (GUI).  
 If you can type fast, Treasura can get your CCA management tasks done faster than traditional GUI apps.  
-Treasura is primarily targeted towards CCA leaders and treasurers. 🎓💼
+Treasura is primarily targeted towards CCA leaders and tråeasurers. 🎓💼
 
 
 <!-- * Table of Contents -->
@@ -26,7 +26,7 @@ Treasura is primarily targeted towards CCA leaders and treasurers. 🎓💼
 
 4. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar Treasura.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
-   ![ui on launch](images/UiOnLaunchv2.png)
+   <img src="images/UiOnLaunchv2.png" alt="ui on launch" width="450" />
 
 5. **Start using Treasura**  
    Type commands into the command box and press **Enter** to execute them.  
@@ -68,7 +68,7 @@ help
 ```
 
 The **Help Window** appears, showing a list of all available commands and their formats.  
-![updated help window](images/UpdatedHelpWindowv2.png)
+<img src="images/UpdatedHelpWindowv2.png" alt="updated help window" width="450" />
 
 Now he’s ready to get started.
 
@@ -85,7 +85,7 @@ list
 ```
 
 He sees the following list:
-![graduated seniors](images/GraduatedSeniors.png)
+<img src="images/GraduatedSeniors.png" alt="graduated seniors" width="450" />
 
 John and Chloe have graduated, so Alex archives them with:
 
@@ -99,7 +99,7 @@ He can confirm the archived list using:
 ```
 listarchived
 ```
-![seniors archived](images/SeniorsArchived.png)
+<img src="images/SeniorsArchived.png" alt="seniors archived" width="450" />
 
 ---
 
@@ -121,7 +121,7 @@ list
 ```
 
 and confirms that all new members appear correctly.
-![new members added](images/NewMembersAdded.png)
+<img src="images/NewMembersAdded.png" alt="new members added" width="450" />
 
 <box type="info" seamless>
 
@@ -141,7 +141,7 @@ addpayment 1,2 a/21.00 d/2025-09-10 r/CCA Shirt Fee
 ```
 
 (Here, `1` refers to Ethan, and `2` to Sarah, based on the current list.)
-![ethan sarah payment success](images/EthanSarahPaymentSuccess.png)
+<img src="images/EthanSarahPaymentSuccess.png" alt="ethan sarah payment success" width="450" />
 
 A few days later, Lucas pays as well, so Alex first finds Lucas in the list:
 ```
@@ -172,7 +172,7 @@ viewpayment 1
 ```
 
 This shows Ethan’s payment history, confirming that he paid on **2025-09-10**.
-![find and view ethan's payments](images/FindAndViewEthansPayments.png)
+<img src="images/FindAndViewEthansPayments.png" alt="find and view ethan's payments" width="450" />
 
 ---
 
@@ -185,16 +185,16 @@ but the payment list is getting long. To locate the payment precisely, he runs:
 findpayment 1 r/membership
 ```
 
-This filters only Ethan’s payments that include the remark *“membership”*.
-![find ethan's payment](images/FindEthansPayment.png)
+This filters only Ethan’s payments that include the remark *“membership”*.  
+<img src="images/FindEthansPayment.png" alt="find ethan's payment" width="450" />
 
 ---
 
 ### ✏️ Correcting a Payment Error
 
 After checking receipts, Alex realizes he made a mistake —  
-Lucas actually paid **\$23.00** because he ordered a Large shirt,  
-but Alex accidentally recorded it as **\$21.00**.
+Lucas actually paid **$23.00** because he ordered a Large shirt,  
+but Alex accidentally recorded it as **$21.00**.
 
 He first finds Lucas with `find lucas` command, then lists all his payments with `viewpayment 1` command. Lastly, he fixes the payment error with:
 
@@ -202,8 +202,8 @@ He first finds Lucas with `find lucas` command, then lists all his payments with
 editpayment 1 p/1 a/23.00
 ```
 
-This updates Lucas’s first payment record to reflect the correct amount.
-![view and edit lucas payment](images/ViewAndEditLucasPayment.png)
+This updates Lucas’s first payment record to reflect the correct amount.  
+<img src="images/ViewAndEditLucasPayment.png" alt="view and edit lucas payment" width="450" />
 
 <div markdown="block" class="alert alert-info">
 
@@ -247,7 +247,7 @@ He uses the `viewpayment all` command to quickly view every recorded payment acr
 ```
 viewpayment all
 ```
-![view payment all](images/ViewPaymentAll.png)
+<img src="images/ViewPaymentAll.png" alt="view payment all" width="450" />
 
 Treasura neatly lists all members and their respective total payment, together with a **grand total sum across all payments**.
 
@@ -290,11 +290,11 @@ By the end of the session, Alex has:
 
 * Items with `…`​ after them can be used multiple times including zero times.<br>
   e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
+    
+* Our commands are case-insensitive. i.e. `AddPayment` and `ADDPAYMENT` will be interpreted as `addpayment`
 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
-  
-* Our commands are case-insensitive. i.e. `AddPayment` and `ADDPAYMENT` will be interpreted as `addpayment`
 
 * Extraneous parameters for commands that do not take in parameters (such as `undo`, `list`, `exit`) will return an error if a parameter is given.<br>
   e.g. if the command specifies `undo 123`, it will cause an error.
@@ -320,7 +320,7 @@ By the end of the session, Alex has:
 
 Shows a message containing all functions.
 
-![updated help window](images/UpdatedHelpWindowv2.png)
+<img src="images/UpdatedHelpWindowv2.png" alt="updated help window" width="450" />
 
 **Format:** `help`
 
@@ -386,7 +386,7 @@ Finds members whose names or tags match the given keywords.
 
 **Expected output:**
 
-  ![result for 'find alex family'](images/findTagName.png)
+<img src="images/findTagName.png" alt="result for 'find alex family'" width="450" />
 
 <!-- @@author -->
 
@@ -435,7 +435,7 @@ Archives a member, hiding them from the active list but keeping their records.
 
 **Expected output:**
 
-![result for 'archive 1,5'](images/ArchiveOutput.png)
+<img src="images/ArchiveOutput.png" alt="result for 'archive 1,5'" width="450" />
 
 ---
 
@@ -457,7 +457,7 @@ Adding an argument will cause an error!<br>
 
 **Expected output:**
 
-![result for 'listarchived'](images/Listarchived.png)
+<img src="images/Listarchived.png" alt="result for 'listarchived'" width="450" />
 
 ---
 
@@ -478,7 +478,7 @@ Restores an archived member to the active list.
 
 **Expected output:**
 
-![result for 'unarchive 1,2'](images/UnarchiveOutput.png)
+<img src="images/UnarchiveOutput.png" alt="result for 'unarchive 1,2'" width="450" />
 
 ---
 
@@ -521,8 +521,8 @@ Adds a payment to one or more members specified by their indices.
 
 **Examples:**
 * `addpayment 1 a/20.00 d/2025-03-12 r/Membership fee`
-
-![add payment output](images/AddPaymentOutput.png)
+  
+<img src="images/AddPaymentOutput.png" alt="add payment output" width="450" />
 
 ---
 
@@ -786,5 +786,3 @@ Furthermore, certain edits can cause the Treasura to behave in unexpected ways (
 | `a/`            | Amount exact                          | —                         | Same as `AMOUNT`          |
 | `d/`            | Date exact                            | —                         | Same as `DATE`            |
 | `r/`            | Substring on remarks                  | 1–30 chars                | Case-insensitive          |
-
-
