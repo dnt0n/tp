@@ -8,7 +8,7 @@
 
 Treasura is a **desktop app for managing CCA members and payments, optimized for use via a Command Line Interface (CLI)** while still having the benefits of a Graphical User Interface (GUI).  
 If you can type fast, Treasura can get your CCA management tasks done faster than traditional GUI apps.  
-Treasura is primarily targeted towards CCA leaders and tråeasurers. 🎓💼
+Treasura is primarily targeted towards CCA leaders and treasurers. 🎓💼
 
 
 <!-- * Table of Contents -->
