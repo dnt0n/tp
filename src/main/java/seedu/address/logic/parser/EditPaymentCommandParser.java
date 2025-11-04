@@ -39,7 +39,7 @@ public class EditPaymentCommandParser implements Parser<EditPaymentCommand> {
         try {
             personIndex = ParserUtil.parseIndex(map.getPreamble());
         } catch (ParseException pe) {
-            throw new ParseException(EditPaymentCommand.MESSAGE_USAGE, pe);
+            throw new ParseException("Invalid command format!\n" + EditPaymentCommand.MESSAGE_USAGE, pe);
         }
 
         int paymentOneBased = parseRequiredPaymentIndex(map);
